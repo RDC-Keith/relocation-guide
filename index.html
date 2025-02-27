@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Relocation Guide: Austin & Scottsdale</title>
+  <!-- Include Chart.js from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Inline CSS -->
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      color: #333;
+    }
+    header {
+      text-align: center;
+      padding: 20px;
+      background-color: #0074e4; /* Realtor.com brand color example */
+      color: white;
+    }
+    header img {
+      max-width: 200px;
+      margin-bottom: 10px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+    }
+    .section {
+      margin: 40px 0;
+    }
+    .form-section {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .map-container {
+      width: 100%;
+      height: 400px;
+    }
+    select, input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0 15px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+    label {
+      font-weight: bold;
+    }
+    button {
+      background-color: #0074e4;
+      color: #fff;
+      border: none;
+      padding: 15px 30px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005bb5;
+    }
+    .neighborhood-card {
+      background: #fff;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    @media (max-width: 768px) {
+      .map-container {
+        height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Section with Logo and Title -->
+  <header>
+    <!-- Replace the src below with your actual graphic file URL -->
+    <img src="https://via.placeholder.com/400x100?text=Realtor.com+Logo" alt="Realtor.com Logo" />
+    <h1>Relocate with Confidence: Explore Austin & Scottsdale</h1>
+  </header>
+
+  <div class="container">
+    <!-- User Input Form Section -->
+    <div class="section form-section" id="userInput">
+      <h2>Plan Your Move</h2>
+      <form id="moveForm">
+        <label for="originCity">Your Current City</label>
+        <select id="originCity" required>
+          <option value="">Select your city</option>
+          <option value="San Francisco">San Francisco</option>
+          <option value="New York">New York</option>
+          <option value="Los Angeles">Los Angeles</option>
+          <!-- Add more cities as needed -->
+        </select>
+        
+        <label for="destinationCity">Desired Destination</label>
+        <select id="destinationCity" required>
+          <option value="">Select your destination</option>
+          <option value="Austin">Austin</option>
+          <option value="Scottsdale">Scottsdale</option>
+        </select>
+        
+        <label for="sellHome">Do you need to sell your home?</label>
+        <select id="sellHome" required>
+          <option value="">Select an option</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+        
+        <label for="futureResidence">What are you looking for in your future residence?</label>
+        <textarea id="futureResidence" rows="3" placeholder="E.g., 3 bedrooms, near good schools, etc." required></textarea>
+        
+        <label for="familyMakeup">Your Family Makeup (e.g., single, couple, family with kids)</label>
+        <input type="text" id="familyMakeup" placeholder="Your family makeup" required>
+        
+        <label for="assistanceNeeded">How much assistance do you believe you'll need (scale 1-10)?</label>
+        <input type="number" id="assistanceNeeded" min="1" max="10" required>
+        
+        <label for="arrivalTime">Planned Time of Arrival</label>
+        <input type="date" id="arrivalTime" required>
+        
+        <label for="motivation">Why are you interested in moving? (The more personal, the better!)</label>
+        <textarea id="motivation" rows="4" placeholder="Tell us your motivation" required></textarea>
+        
+        <button type="submit">Submit & Get Your Personalized Guide</button>
+      </form>
+    </div>
+
+    <!-- Cost of Living Comparison Section -->
+    <div class="section" id="costComparison">
+      <h2>Cost of Living Comparison</h2>
+      <canvas id="costChart"></canvas>
+    </div>
+
+    <!-- Housing Market Data Section -->
+    <div class="section" id="housingData">
+      <h2>Housing Market Insights</h2>
+      <div id="housingInfo">
+        <!-- Dynamic housing data will be injected here -->
+      </div>
+    </div>
+
+    <!-- Dynamic Map Section -->
+    <div class="section" id="cityMap">
+      <h2>Explore Your New City</h2>
+      <div class="map-container" id="mapContainer">
+        <!-- The Google Map will be embedded here -->
+      </div>
+    </div>
+
+    <!-- Neighborhood Recommendation Section -->
+    <div class="section" id="neighborhoodRec">
+      <h2>Neighborhood Recommendations</h2>
+      <div id="neighborhoods">
+        <!-- Dynamic neighborhood suggestions will be displayed here -->
+      </div>
+    </div>
+
+    <!-- Embedded Google Form Section -->
+    <div class="section" id="googleFormSection">
+      <h2>Get in Touch</h2>
+      <!-- Replace the src URL with your actual Google Form embed link -->
+      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfDUMMYFORMID/viewform?embedded=true" width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+    </div>
+  </div>
+
+  <!-- JavaScript for dynamic functionality -->
+  <script>
+    // ===== API Configuration =====
+    // Replace with your actual API keys
+    const NUMBEO_API_KEY = 'YOUR_NUMBEO_API_KEY';
+    const REALTOR_API_KEY = 'YOUR_REALTOR_API_KEY';
+    // Example endpoints (modify as needed for real API usage)
+    const numbeoAPIEndpoint = 'https://www.numbeo.com/api/cost_of_living?api_key=' + NUMBEO_API_KEY;
+    const realtorAPIEndpoint = 'https://api.realtor.com/v1/housing_market?api_key=' + REALTOR_API_KEY;
+
+    // ===== Fetch Cost of Living Data from Numbeo =====
+    async function fetchCostData(origin, destination) {
+      try {
+        // Construct API URLs for both cities (modify parameters as per Numbeo's API documentation)
+        const originURL = numbeoAPIEndpoint + '&city=' + encodeURIComponent(origin);
+        const destURL = numbeoAPIEndpoint + '&city=' + encodeURIComponent(destination);
+        
+        // Fetch data for origin city
+        const originResponse = await fetch(originURL);
+        const originData = await originResponse.json();
+        
+        // Fetch data for destination city
+        const destResponse = await fetch(destURL);
+        const destData = await destResponse.json();
+        
+        // Return data (structure may need adjustment based on actual API response)
+        return {
+          origin: originData,
+          destination: destData
+        };
+      } catch (error) {
+        console.error('Error fetching cost data:', error);
+      }
+    }
+    
+    // ===== Fetch Housing Market Data from Realtor.com =====
+    async function fetchHousingData(city) {
+      try {
+        const url = realtorAPIEndpoint + '&city=' + encodeURIComponent(city);
+        const response = await fetch(url);
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Error fetching housing data:', error);
+      }
+    }
+    
+    // ===== Update Cost of Living Chart =====
+    async function updateCostChart(origin, destination) {
+      const costData = await fetchCostData(origin, destination);
+      // Use dummy data if API responses are not available; adjust keys as needed
+      const originCosts = costData && costData.origin ? costData.origin : { totalCost: 3000, rent: 1500, groceries: 500, transportation: 300 };
+      const destCosts = costData && costData.destination ? costData.destination : { totalCost: 2000, rent: 1000, groceries: 400, transportation: 250 };
+
+      const ctx = document.getElementById('costChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Total Cost', 'Rent', 'Groceries', 'Transportation'],
+          datasets: [
+            {
+              label: origin,
+              data: [originCosts.totalCost, originCosts.rent, originCosts.groceries, originCosts.transportation],
+              backgroundColor: 'rgba(0,116,228,0.6)'
+            },
+            {
+              label: destination,
+              data: [destCosts.totalCost, destCosts.rent, destCosts.groceries, destCosts.transportation],
+              backgroundColor: 'rgba(255,99,132,0.6)'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          title: {
+            display: true,
+            text: 'Cost of Living Comparison'
+          }
+        }
+      });
+    }
+    
+    // ===== Update Housing Market Information =====
+    async function updateHousingInfo(city) {
+      const data = await fetchHousingData(city);
+      const housingDiv = document.getElementById('housingInfo');
+      let housingHTML = '';
+      
+      // Use dummy data if actual API data is unavailable
+      if (!data) {
+        housingHTML = `<p>No real-time data available. Here is some sample info for ${city}:</p>
+          <ul>
+            <li>Median Home Price: $500,000</li>
+            <li>Market Trend: Stable</li>
+            <li>Days on Market: 45</li>
+          </ul>`;
+      } else {
+        // Parse and display actual data from the API (modify as per actual API response)
+        housingHTML = `<p>Median Home Price: $${data.medianPrice}</p>
+          <p>Market Trend: ${data.marketTrend}</p>
+          <p>Days on Market: ${data.daysOnMarket}</p>`;
+      }
+      housingDiv.innerHTML = housingHTML;
+    }
+    
+    // ===== Initialize Google Map =====
+    function initMap(city) {
+      // Google Maps Embed API URL – replace YOUR_GOOGLE_MAPS_API_KEY with your key
+      let mapSrc = '';
+      if (city === 'Austin') {
+        mapSrc = 'https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=Austin,TX';
+      } else if (city === 'Scottsdale') {
+        mapSrc = 'https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=Scottsdale,AZ';
+      } else {
+        mapSrc = 'https://www.google.com/maps/embed/v1/view?key=YOUR_GOOGLE_MAPS_API_KEY&center=39.8283,-98.5795&zoom=4';
+      }
+      document.getElementById('mapContainer').innerHTML = `<iframe width="100%" height="100%" frameborder="0" style="border:0" src="${mapSrc}" allowfullscreen></iframe>`;
+    }
+    
+    // ===== Update Neighborhood Recommendations =====
+    function updateNeighborhoods(city, userPreferences) {
+      const neighborhoodsDiv = document.getElementById('neighborhoods');
+      let recommendations = '';
+      
+      // Dummy recommendations based on city selection (customize as desired)
+      if (city === 'Austin') {
+        recommendations = `
+          <div class="neighborhood-card">
+            <h3>Downtown Austin</h3>
+            <p>Great for young professionals, vibrant nightlife, and tech opportunities.</p>
+          </div>
+          <div class="neighborhood-card">
+            <h3>South Congress (SoCo)</h3>
+            <p>Eclectic vibe with plenty of dining and boutique shopping options.</p>
+          </div>
+        `;
+      } else if (city === 'Scottsdale') {
+        recommendations = `
+          <div class="neighborhood-card">
+            <h3>Old Town Scottsdale</h3>
+            <p>Lively, with excellent dining, nightlife, and a rich arts scene.</p>
+          </div>
+          <div class="neighborhood-card">
+            <h3>North Scottsdale</h3>
+            <p>Upscale neighborhoods with golf courses and top-rated schools.</p>
+          </div>
+        `;
+      }
+      neighborhoodsDiv.innerHTML = recommendations;
+    }
+    
+    // ===== Form Submission Handler =====
+    document.getElementById('moveForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const originCity = document.getElementById('originCity').value;
+      const destinationCity = document.getElementById('destinationCity').value;
+      
+      // Update sections based on user input
+      updateCostChart(originCity, destinationCity);
+      updateHousingInfo(destinationCity);
+      initMap(destinationCity);
+      updateNeighborhoods(destinationCity, {});
+      
+      // Scroll to the Cost Comparison section for better UX
+      window.scrollTo({ top: document.getElementById('costComparison').offsetTop, behavior: 'smooth' });
+    });
+  </script>
+
+  <!-- Deployment & Setup Instructions (detailed below) -->
+  <!--
+  ---------------- Deployment & Setup Instructions ----------------
+
+  1. Google Form & Google Sheet Setup:
+     - Create a new Google Form with fields matching the inputs (or use the embedded form here).
+     - In the Google Form, go to "Responses" → click the three dots → "Select response destination" to create a new Google Sheet.
+     - Replace the iframe's src URL with your form’s embed URL.
+  
+  2. API Keys:
+     - Sign up with Numbeo to obtain your API key and replace 'YOUR_NUMBEO_API_KEY' in the script.
+     - If Realtor.com offers an API, sign up to obtain a key and replace 'YOUR_REALTOR_API_KEY'.
+     - For Google Maps, get an API key from Google Cloud Platform and replace 'YOUR_GOOGLE_MAPS_API_KEY' in the initMap function.
+  
+  3. Deploying on GitHub Pages:
+     - Create a new GitHub repository (e.g., "relocation-guide").
+     - Add this index.html file to the repository.
+     - Commit and push the file to the main branch.
+     - In your repository, navigate to Settings → GitHub Pages.
+     - Under "Source", select the main branch (or the folder where index.html is located) and save.
+     - Your site will be live at https://<your-username>.github.io/relocation-guide/.
+  
+  -------------------------------------------------------------------
+  -->
+</body>
+</html>
