@@ -2,23 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Relocation Guide: Austin & Scottsdale</title>
+
   <!-- Include Chart.js from CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Inline CSS -->
+
+  <!-- Inline CSS for a more upbeat, pastel-inspired color scheme -->
   <style>
+    /* Overall Layout & Typography */
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #f8f8f8;
+      font-family: "Trebuchet MS", Arial, sans-serif;
+      background: linear-gradient(120deg, #FFEBE8 0%, #FFEFE5 50%, #FFF8E8 100%);
       color: #333;
     }
     header {
       text-align: center;
       padding: 20px;
-      background-color: #0074e4; /* Realtor.com brand color example */
-      color: white;
+      background-color: #FFA270; /* A warm pastel orange */
+      color: #fff;
     }
     header img {
       max-width: 200px;
@@ -28,32 +31,42 @@
       max-width: 1200px;
       margin: auto;
       padding: 20px;
+      background: rgba(255,255,255,0.6);
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
     .section {
       margin: 40px 0;
     }
+    .section h2 {
+      margin-bottom: 20px;
+      color: #006064; /* Deep teal accent */
+    }
     .form-section {
-      background-color: #fff;
+      background-color: rgba(255,255,255,0.8);
       padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    .map-container {
-      width: 100%;
-      height: 400px;
-    }
-    select, input, textarea {
-      width: 100%;
-      padding: 10px;
-      margin: 5px 0 15px;
-      border: 1px solid #ccc;
-      border-radius: 3px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
     }
     label {
+      display: block;
       font-weight: bold;
+      margin: 10px 0 5px;
+    }
+    select, input[type="text"], input[type="date"], textarea, input[type="number"], input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .form-hint {
+      font-size: 0.9em;
+      color: #555;
+      margin: -10px 0 10px;
     }
     button {
-      background-color: #0074e4;
+      background-color: #006064;
       color: #fff;
       border: none;
       padding: 15px 30px;
@@ -62,18 +75,91 @@
       cursor: pointer;
     }
     button:hover {
-      background-color: #005bb5;
+      background-color: #004d4d;
+    }
+    .map-container {
+      width: 100%;
+      height: 400px;
+      margin-top: 20px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .table-container {
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+      background: rgba(255,255,255,0.7);
     }
     .neighborhood-card {
-      background: #fff;
+      background: rgba(255,255,255,0.8);
       padding: 15px;
       margin-bottom: 10px;
       border-radius: 5px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
+    .sub-section-title {
+      font-size: 1.2em;
+      margin: 25px 0 10px;
+      font-weight: bold;
+      color: #006064;
+    }
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    .carousel-track {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+    .carousel-slide {
+      min-width: 33.33%; /* Show 3 images at a time */
+      box-sizing: border-box;
+      text-align: center;
+      padding: 5px;
+    }
+    .carousel-slide img {
+      max-width: 100%;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0,0,0,0.4);
+      color: #fff;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+    .carousel-btn:hover {
+      background-color: rgba(0,0,0,0.7);
+    }
+    .carousel-btn.prev {
+      left: 10px;
+    }
+    .carousel-btn.next {
+      right: 10px;
+    }
     @media (max-width: 768px) {
       .map-container {
         height: 300px;
+      }
+      .carousel-slide {
+        min-width: 100%;
       }
     }
   </style>
@@ -81,81 +167,305 @@
 <body>
   <!-- Header Section with Logo and Title -->
   <header>
-    <!-- Replace the src below with your actual graphic file URL -->
+    <!-- Replace the src below with your actual graphic file URL or brand logo -->
     <img src="https://via.placeholder.com/400x100?text=Realtor.com+Logo" alt="Realtor.com Logo" />
     <h1>Relocate with Confidence: Explore Austin & Scottsdale</h1>
   </header>
 
   <div class="container">
-    <!-- User Input Form Section -->
+    <!-- PART 1: Form Section (Plan Your Move) -->
     <div class="section form-section" id="userInput">
       <h2>Plan Your Move</h2>
       <form id="moveForm">
-        <label for="originCity">Your Current City</label>
+        <!-- Expansive City List (Major Tech Hubs) -->
+        <label for="originCity">Which Tech Hub Are You Coming From?</label>
         <select id="originCity" required>
           <option value="">Select your city</option>
-          <option value="San Francisco">San Francisco</option>
-          <option value="New York">New York</option>
-          <option value="Los Angeles">Los Angeles</option>
-          <!-- Add more cities as needed -->
+          <option value="San Francisco, CA, United States">San Francisco</option>
+          <option value="Seattle, WA, United States">Seattle</option>
+          <option value="New York, NY, United States">New York</option>
+          <option value="Los Angeles, CA, United States">Los Angeles</option>
+          <option value="Boston, MA, United States">Boston</option>
+          <option value="Chicago, IL, United States">Chicago</option>
+          <option value="Denver, CO, United States">Denver</option>
+          <option value="Atlanta, GA, United States">Atlanta</option>
+          <option value="Austin, TX, United States">Austin</option>
+          <option value="Raleigh, NC, United States">Raleigh</option>
+          <option value="Dallas, TX, United States">Dallas</option>
+          <option value="San Diego, CA, United States">San Diego</option>
+          <option value="San Jose, CA, United States">San Jose</option>
+          <option value="Portland, OR, United States">Portland</option>
+          <option value="Phoenix, AZ, United States">Phoenix</option>
+          <option value="Other">Don’t see your City? Add it here...</option>
         </select>
+        <!-- If user selects 'Other', reveal a text field -->
+        <div id="otherCityContainer" style="display:none;">
+          <label for="otherCity">Enter Your City:</label>
+          <input type="text" id="otherCity" placeholder="Type your city here"/>
+        </div>
         
-        <label for="destinationCity">Desired Destination</label>
-        <select id="destinationCity" required>
-          <option value="">Select your destination</option>
-          <option value="Austin">Austin</option>
-          <option value="Scottsdale">Scottsdale</option>
-        </select>
-        
+        <!-- "What if we did move?" Scenario -->
+        <div class="sub-section-title">What if we really did move? Let's explore!</div>
         <label for="sellHome">Do you need to sell your home?</label>
         <select id="sellHome" required>
           <option value="">Select an option</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
+          <option value="yes">Yes, I'll be selling my home.</option>
+          <option value="no">No, I don't own a home or don't plan to sell.</option>
         </select>
         
-        <label for="futureResidence">What are you looking for in your future residence?</label>
-        <textarea id="futureResidence" rows="3" placeholder="E.g., 3 bedrooms, near good schools, etc." required></textarea>
+        <!-- Future Residence Preferences -->
+        <div class="sub-section-title">What Are You Looking For In Your Future Residence?</div>
+        <p class="form-hint">
+          Consider whether you’re open to renting first, the amenities you want (pool, gym, pet-friendly, etc.), 
+          whether you want a new build or existing home, proximity to downtown, transit options, local school quality, 
+          your food or nightlife interests, and more. <br><br>
+          • Are you OK with renting prior to buying a home?<br>
+          • Interested in a new build or a pre-existing home?<br>
+          • Proximity to work or downtown?<br>
+          • Public transit or prefer to drive?<br>
+          • School systems needed?<br>
+          • Food scene, nightlife, or quieter neighborhoods?<br>
+          • Shopping preferences, or dining style?<br>
+          • Anything else that reflects your personal tastes and lifestyle?<br><br>
+          And please feel free to prioritize your list of needs so our AI can fine-tune your creative journey even more.
+        </p>
+        <textarea id="futureResidence" rows="4" placeholder="Tell us about your must-haves, nice-to-haves, and any special requests..." required></textarea>
         
-        <label for="familyMakeup">Your Family Makeup (e.g., single, couple, family with kids)</label>
-        <input type="text" id="familyMakeup" placeholder="Your family makeup" required>
+        <!-- Family Makeup -->
+        <label for="familyMakeup">Who Are We Helping Move? (Single, Couple, Kids, Extended Family, etc.)</label>
+        <input type="text" id="familyMakeup" placeholder="e.g. 'Me and my partner, plus two kids'"/>
         
-        <label for="assistanceNeeded">How much assistance do you believe you'll need (scale 1-10)?</label>
-        <input type="number" id="assistanceNeeded" min="1" max="10" required>
+        <!-- Assistance Needed (Narrative + final numeric field) -->
+        <div class="sub-section-title">What Kind of Help Will You Need?</div>
+        <p class="form-hint">
+          Please describe what you’ll need in order to make this next amazing step possible. <br><br>
+          • Do you have to break a lease? If so, how much might that cost?<br>
+          • How many people (and pets!) are part of your move?<br>
+          • Will you be driving or flying (or both)?<br>
+          • Do you have parents or extended family coming along?<br>
+          • Basically, anything that could add to your total moving costs.<br>
+          • Or, if you just have a number in mind that would make you feel whole and taken care of, you can share that too.<br><br>
+          Just a quick note about our relocation bonuses: You do have to start at RDC before receiving your assistance (standard procedure at most companies). 
+          But you’ll receive it in your first check, so you’re not out of pocket for too long—maybe just a credit card billing cycle, if that.
+        </p>
+        <textarea id="assistanceDescription" rows="4" placeholder="Let us know the moving assistance details..."></textarea>
         
-        <label for="arrivalTime">Planned Time of Arrival</label>
+        <!-- Concrete Amount -->
+        <label for="assistanceAmount">What's Your Best Estimate of the Total Assistance You'd Need?</label>
+        <select id="assistanceAmount" required>
+          <option value="">Select an option</option>
+          <option value="5K">$5,000</option>
+          <option value="10K">$10,000</option>
+          <option value="15K">$15,000</option>
+          <option value="15K+">More than $15,000 (may need a small exception)</option>
+        </select>
+        
+        <!-- Planned Time of Arrival -->
+        <label for="arrivalTime">When Are You Aiming to Arrive?</label>
         <input type="date" id="arrivalTime" required>
         
-        <label for="motivation">Why are you interested in moving? (The more personal, the better!)</label>
-        <textarea id="motivation" rows="4" placeholder="Tell us your motivation" required></textarea>
+        <!-- Motivation -->
+        <div class="sub-section-title">Why Are You Interested in Moving? (The More Personal, The Better!)</div>
+        <p class="form-hint">
+          Here are some starter questions: <br><br>
+          • Is this where you grew up or went to school?<br>
+          • Do you have a good community of family/friends there?<br>
+          • Are you looking to improve quality of life (more home, better schools, healthcare, lower taxes)?<br>
+          • Is this about retirement or post-career lifestyle?<br><br>
+          The more you share, the clearer your vision becomes—for you and for us. By helping us understand your motives, you're painting your own future success. Pumped? We sure are!
+        </p>
+        <textarea id="motivation" rows="4" placeholder="Share your story..." required></textarea>
         
-        <button type="submit">Submit & Get Your Personalized Guide</button>
+        <!-- Destination City -->
+        <label for="destinationCity">Where Are You Considering Moving To?</label>
+        <select id="destinationCity" required>
+          <option value="">Select your destination</option>
+          <option value="Austin, TX, United States">Austin</option>
+          <option value="Scottsdale, AZ, United States">Scottsdale</option>
+        </select>
+        
+        <!-- Submit Button -->
+        <button type="submit">Submit & Start Crafting Your Journey</button>
       </form>
     </div>
 
-    <!-- Cost of Living Comparison Section -->
-    <div class="section" id="costComparison">
-      <h2>Cost of Living Comparison</h2>
-      <canvas id="costChart"></canvas>
-    </div>
-
-    <!-- Housing Market Data Section -->
-    <div class="section" id="housingData">
-      <h2>Housing Market Insights</h2>
-      <div id="housingInfo">
-        <!-- Dynamic housing data will be injected here -->
+    <!-- PART 2: Current vs Desired Living Situation & Cost Table -->
+    <div class="section form-section" id="livingSituation">
+      <h2>Compare Your Current & Future Home Details</h2>
+      <p>
+        Provide details about your current living situation and what you’d like in your new place. 
+        Once both forms are completed, we'll show you approximate cost-of-living data (Dining, Rent, Groceries, Gas, Utilities, and State Taxes) 
+        along with an estimated total for each city.
+      </p>
+      
+      <!-- Current Living Situation -->
+      <div class="sub-section-title">Your Current Living Situation</div>
+      <form id="currentHomeForm">
+        <label for="currentBedrooms">Number of Bedrooms</label>
+        <input type="number" id="currentBedrooms" min="0" placeholder="e.g. 3" />
+        
+        <label for="currentBathrooms">Number of Bathrooms</label>
+        <input type="number" id="currentBathrooms" min="0" step="0.5" placeholder="e.g. 2.5" />
+        
+        <label for="currentGarage">Garage (1, 2, 3 car, none)</label>
+        <input type="text" id="currentGarage" placeholder="e.g. 2 car garage" />
+        
+        <label for="currentPool">Pool?</label>
+        <input type="text" id="currentPool" placeholder="Yes / No / Community Pool?" />
+        
+        <label for="currentSqFt">Square Footage of Home</label>
+        <input type="number" id="currentSqFt" placeholder="e.g. 2000" />
+        
+        <label for="currentLotSize">Square Footage of Lot / Property</label>
+        <input type="number" id="currentLotSize" placeholder="e.g. 5000" />
+        
+        <label for="currentStories">Stories (1, 2, etc.)</label>
+        <input type="number" id="currentStories" min="1" placeholder="e.g. 2" />
+        
+        <label for="currentBasementAttic">Basement / Attic?</label>
+        <input type="text" id="currentBasementAttic" placeholder="e.g. Full basement, partial attic, etc." />
+        
+        <label for="currentMortgageRent">Monthly Mortgage / Rent</label>
+        <input type="number" id="currentMortgageRent" placeholder="e.g. 2000" />
+        
+        <label for="currentUtilities">Monthly Utilities</label>
+        <input type="number" id="currentUtilities" placeholder="e.g. 300" />
+        
+        <label for="currentInsurance">Monthly Insurance</label>
+        <input type="number" id="currentInsurance" placeholder="e.g. 100" />
+        
+        <label for="currentHOA">Monthly HOA</label>
+        <input type="number" id="currentHOA" placeholder="e.g. 50" />
+        
+        <button type="button" id="saveCurrentHomeBtn">Save Current Home Info</button>
+      </form>
+      
+      <hr/>
+      
+      <!-- Desired Living Situation -->
+      <div class="sub-section-title">Your Desired Home in the New City</div>
+      <form id="desiredHomeForm">
+        <label for="desiredBedrooms">Number of Bedrooms</label>
+        <input type="number" id="desiredBedrooms" min="0" placeholder="e.g. 4" />
+        
+        <label for="desiredBathrooms">Number of Bathrooms</label>
+        <input type="number" id="desiredBathrooms" min="0" step="0.5" placeholder="e.g. 3" />
+        
+        <label for="desiredGarage">Garage (1, 2, 3 car, none)</label>
+        <input type="text" id="desiredGarage" placeholder="e.g. 2 car garage" />
+        
+        <label for="desiredPool">Pool?</label>
+        <input type="text" id="desiredPool" placeholder="Yes / No / Community Pool?" />
+        
+        <label for="desiredSqFt">Square Footage of Home</label>
+        <input type="number" id="desiredSqFt" placeholder="e.g. 2500" />
+        
+        <label for="desiredLotSize">Square Footage of Lot / Property</label>
+        <input type="number" id="desiredLotSize" placeholder="e.g. 7000" />
+        
+        <label for="desiredStories">Stories (1, 2, etc.)</label>
+        <input type="number" id="desiredStories" min="1" placeholder="e.g. 2" />
+        
+        <label for="desiredBasementAttic">Basement / Attic?</label>
+        <input type="text" id="desiredBasementAttic" placeholder="e.g. Finished basement, etc." />
+        
+        <label for="desiredMortgageRent">Estimated Monthly Mortgage / Rent</label>
+        <input type="number" id="desiredMortgageRent" placeholder="e.g. 2500" />
+        
+        <label for="desiredUtilities">Estimated Monthly Utilities</label>
+        <input type="number" id="desiredUtilities" placeholder="e.g. 350" />
+        
+        <label for="desiredInsurance">Estimated Monthly Insurance</label>
+        <input type="number" id="desiredInsurance" placeholder="e.g. 120" />
+        
+        <label for="desiredHOA">Estimated Monthly HOA</label>
+        <input type="number" id="desiredHOA" placeholder="e.g. 75" />
+        
+        <button type="button" id="saveDesiredHomeBtn">Save Desired Home Info</button>
+      </form>
+      
+      <!-- Button to trigger cost comparison after both forms -->
+      <button type="button" id="compareBtn" style="margin-top:20px; display:none;">Show My Cost Comparison</button>
+      
+      <!-- Cost-of-Living Table (Dining, Rent, Groceries, Gas, Utilities, State Taxes) -->
+      <div class="table-container" id="costTableContainer" style="display:none;">
+        <h3>Cost of Living Breakdown</h3>
+        <table id="costTable">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th id="originCityLabel">Origin</th>
+              <th id="destinationCityLabel">Destination</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Dining</td>
+              <td id="originDining"></td>
+              <td id="destDining"></td>
+            </tr>
+            <tr>
+              <td>Rent</td>
+              <td id="originRent"></td>
+              <td id="destRent"></td>
+            </tr>
+            <tr>
+              <td>Groceries</td>
+              <td id="originGroceries"></td>
+              <td id="destGroceries"></td>
+            </tr>
+            <tr>
+              <td>Gas</td>
+              <td id="originGas"></td>
+              <td id="destGas"></td>
+            </tr>
+            <tr>
+              <td>Utilities</td>
+              <td id="originUtilities"></td>
+              <td id="destUtilities"></td>
+            </tr>
+            <tr>
+              <td>State Taxes</td>
+              <td id="originTaxes"></td>
+              <td id="destTaxes"></td>
+            </tr>
+            <tr style="font-weight:bold;">
+              <td>Total Estimated Monthly</td>
+              <td id="originTotal"></td>
+              <td id="destTotal"></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <!-- Dynamic Map Section -->
+    <!-- PART 3: Cost of Living Chart (Optional Visual) -->
+    <div class="section" id="costComparison">
+      <h2>Visual Cost Comparison</h2>
+      <canvas id="costChart"></canvas>
+    </div>
+
+    <!-- PART 4: Housing Market Data Section (Placeholder) -->
+    <div class="section" id="housingData">
+      <h2>Housing Market Insights</h2>
+      <div id="housingInfo">
+        <!-- Dynamic housing data from Numbeo or other sources will be injected here -->
+      </div>
+    </div>
+
+    <!-- PART 5: Explore Your New City (Map) -->
     <div class="section" id="cityMap">
       <h2>Explore Your New City</h2>
+      <p>
+        Below is an embedded map for your chosen destination. We’re using your Google Maps API key to center on the city you select. 
+        If you’d like to see more overlays or advanced features, let us know!
+      </p>
       <div class="map-container" id="mapContainer">
         <!-- The Google Map will be embedded here -->
       </div>
     </div>
 
-    <!-- Neighborhood Recommendation Section -->
+    <!-- PART 6: Neighborhood Recommendations -->
     <div class="section" id="neighborhoodRec">
       <h2>Neighborhood Recommendations</h2>
       <div id="neighborhoods">
@@ -163,82 +473,242 @@
       </div>
     </div>
 
-    <!-- Embedded Google Form Section -->
-    <div class="section" id="googleFormSection">
-      <h2>Get in Touch</h2>
-      <!-- Replace the src URL with your actual Google Form embed link -->
-      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfDUMMYFORMID/viewform?embedded=true" width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+    <!-- PART 7: Fun Facts & Upcoming Events (Including Calendar) -->
+    <div class="section" id="funFactsSection">
+      <h2>Fun Facts & Upcoming Events</h2>
+      <div id="funFacts"></div>
+
+      <h3>Local Event Calendar</h3>
+      <div class="table-container" id="eventCalendarContainer"></div>
+
+      <h3>A Peek at the Local Scene</h3>
+      <p>Check out these snapshots of what life looks like in <span id="carouselCityLabel">Austin or Scottsdale</span>!</p>
+      
+      <!-- Carousel Container -->
+      <div class="carousel-container" id="carouselContainer">
+        <button class="carousel-btn prev" id="prevBtn">&#10094;</button>
+        <div class="carousel-track" id="carouselTrack">
+          <!-- Carousel slides will be dynamically inserted here -->
+        </div>
+        <button class="carousel-btn next" id="nextBtn">&#10095;</button>
+      </div>
+    </div>
+
+    <!-- PART 8: Email a Copy to Yourself -->
+    <div class="section form-section" id="emailSection">
+      <h2>Save & Share Your Relocation Adventure</h2>
+      <button id="emailButton" style="background: #8BC34A;">
+        Would you like to email a copy of this to yourself?
+      </button>
     </div>
   </div>
 
   <!-- JavaScript for dynamic functionality -->
   <script>
-    // ===== API Configuration =====
-    // Replace with your actual API keys
-    const NUMBEO_API_KEY = 'YOUR_NUMBEO_API_KEY';
-    const REALTOR_API_KEY = 'YOUR_REALTOR_API_KEY';
-    // Example endpoints (modify as needed for real API usage)
-    const numbeoAPIEndpoint = 'https://www.numbeo.com/api/cost_of_living?api_key=' + NUMBEO_API_KEY;
-    const realtorAPIEndpoint = 'https://api.realtor.com/v1/housing_market?api_key=' + REALTOR_API_KEY;
+    // ====== Google Maps API Key (Replace with your real key) ======
+    const GOOGLE_MAPS_API_KEY = 'AIzaSyBXm1ezEjfsjdDB-f26OAztdiRldLIM8X4';
 
-    // ===== Fetch Cost of Living Data from Numbeo =====
+    // ====== Numbeo API Key ======
+    const NUMBEO_API_KEY = 'ydwk8vb0prixpe';
+    const NUMBEO_API_BASE = 'https://www.numbeo.com/api';
+
+    // ====== Global Variables for Form Data ======
+    let selectedOriginCity = '';
+    let selectedDestinationCity = '';
+    let currentHomeSaved = false;
+    let desiredHomeSaved = false;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Show/hide 'Other City' input if user selects 'Other'
+      document.getElementById('originCity').addEventListener('change', function() {
+        if (this.value === 'Other') {
+          document.getElementById('otherCityContainer').style.display = 'block';
+        } else {
+          document.getElementById('otherCityContainer').style.display = 'none';
+        }
+      });
+
+      // Save Current Home Info
+      document.getElementById('saveCurrentHomeBtn').addEventListener('click', () => {
+        currentHomeSaved = true;
+        alert('Current home details saved. Thank you!');
+        maybeEnableCompare();
+      });
+
+      // Save Desired Home Info
+      document.getElementById('saveDesiredHomeBtn').addEventListener('click', () => {
+        desiredHomeSaved = true;
+        alert('Desired home details saved. Great!');
+        maybeEnableCompare();
+      });
+
+      // Show Compare button only if both forms are saved
+      function maybeEnableCompare() {
+        if (currentHomeSaved && desiredHomeSaved) {
+          document.getElementById('compareBtn').style.display = 'inline-block';
+        }
+      }
+
+      // Handle Compare Button
+      document.getElementById('compareBtn').addEventListener('click', () => {
+        document.getElementById('costTableContainer').style.display = 'block';
+        updateCostTable(selectedOriginCity, selectedDestinationCity);
+      });
+
+      // Handle main form submission
+      document.getElementById('moveForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        selectedOriginCity = document.getElementById('originCity').value;
+        if (selectedOriginCity === 'Other') {
+          const customCity = document.getElementById('otherCity').value.trim();
+          if (customCity) {
+            selectedOriginCity = customCity;
+          }
+        }
+        selectedDestinationCity = document.getElementById('destinationCity').value;
+
+        // Update the Chart & Table
+        updateCostChart(selectedOriginCity, selectedDestinationCity);
+
+        // Update Housing Info (placeholder)
+        updateHousingInfo(selectedDestinationCity);
+
+        // Initialize Map
+        initMap(selectedDestinationCity);
+
+        // Update Neighborhood Recommendations
+        updateNeighborhoods(selectedDestinationCity);
+
+        // Update Fun Facts & Carousel
+        updateFunFacts(selectedDestinationCity);
+        setupCarousel(selectedDestinationCity);
+
+        // Update the Event Calendar
+        updateEventCalendar(selectedDestinationCity);
+
+        // Scroll to the "Compare Your Current & Future Home Details" section
+        document.getElementById('livingSituation').scrollIntoView({behavior: 'smooth'});
+      });
+
+      // Handle "Email a copy to yourself" button
+      document.getElementById('emailButton').addEventListener('click', () => {
+        const userEmail = prompt("Please enter your email address:");
+        if (!userEmail) return;
+
+        // Subject line includes the chosen destination
+        const subject = `Your Realtor.com Build Your Relo Adventure for ${selectedDestinationCity}`;
+        // Provide a short summary in the body
+        const bodyText = `
+Hello!
+
+Here is a quick summary of your relocation guide for ${selectedDestinationCity}:
+
+- Origin City: ${selectedOriginCity}
+- Destination City: ${selectedDestinationCity}
+- Key Highlights: 
+   1) See the cost-of-living chart and breakdown on our site.
+   2) Explore the interactive map for your new city.
+   3) Neighborhood recommendations for your lifestyle.
+   4) Fun facts & upcoming events in ${selectedDestinationCity}.
+
+Cheers,
+Your Realtor.com Relocation Team
+        `;
+        
+        // Construct mailto link with BCC
+        const mailtoLink = `mailto:${encodeURIComponent(userEmail)}?bcc=keith.punches.contractor@realtor.com&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}`;
+        window.location.href = mailtoLink;
+      });
+    });
+
+    // ====== Numbeo Integration ======
+    async function getNumbeoCityPrices(cityName) {
+      const url = `${NUMBEO_API_BASE}/city_prices?api_key=${NUMBEO_API_KEY}&query=${encodeURIComponent(cityName)}`;
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data.error_message) {
+        console.warn(`Numbeo error for ${cityName}: ${data.error_message}`);
+        return { dining: 0, rent: 0, groceries: 0, gas: 0, utilities: 0, taxes: 0 };
+      }
+      return parseNumbeoPrices(data);
+    }
+    function parseNumbeoPrices(data) {
+      const prices = data.prices || [];
+      function getAvgPrice(itemName) {
+        const item = prices.find(p => p.item_name === itemName);
+        return item ? item.average_price : 0;
+      }
+      const dining = getAvgPrice("Meal, Inexpensive Restaurant") || 15;
+      const rent = getAvgPrice("Apartment (1 bedroom) in City Centre") || 1500;
+      const groceries = (
+        getAvgPrice("Milk (regular), (1 liter)") +
+        getAvgPrice("Loaf of Fresh White Bread (500g)") +
+        getAvgPrice("Eggs (regular) (12)") +
+        getAvgPrice("Local Cheese (1kg)") +
+        getAvgPrice("Chicken Fillets (1kg)")
+      ) || 100;
+      const gas = getAvgPrice("Gasoline (1 liter)") * 60 || 180;
+      const utilities = getAvgPrice("Basic (Electricity, Heating, Cooling, Water, Garbage) for 85m2 Apartment") || 150;
+      
+      let taxes = 100;
+      const cityNameLower = data.name.toLowerCase();
+      if (cityNameLower.includes("california") || cityNameLower.includes("new york")) {
+        taxes = 250;
+      }
+      return { dining, rent, groceries, gas, utilities, taxes };
+    }
     async function fetchCostData(origin, destination) {
       try {
-        // Construct API URLs for both cities (modify parameters as per Numbeo's API documentation)
-        const originURL = numbeoAPIEndpoint + '&city=' + encodeURIComponent(origin);
-        const destURL = numbeoAPIEndpoint + '&city=' + encodeURIComponent(destination);
-        
-        // Fetch data for origin city
-        const originResponse = await fetch(originURL);
-        const originData = await originResponse.json();
-        
-        // Fetch data for destination city
-        const destResponse = await fetch(destURL);
-        const destData = await destResponse.json();
-        
-        // Return data (structure may need adjustment based on actual API response)
-        return {
-          origin: originData,
-          destination: destData
-        };
+        const originData = await getNumbeoCityPrices(origin);
+        const destData = await getNumbeoCityPrices(destination);
+        return { origin: originData, destination: destData };
       } catch (error) {
         console.error('Error fetching cost data:', error);
+        return null;
       }
     }
-    
-    // ===== Fetch Housing Market Data from Realtor.com =====
-    async function fetchHousingData(city) {
-      try {
-        const url = realtorAPIEndpoint + '&city=' + encodeURIComponent(city);
-        const response = await fetch(url);
-        const data = await response.json();
-        return data;
-      } catch (error) {
-        console.error('Error fetching housing data:', error);
-      }
+    async function updateCostTable(origin, destination) {
+      const costData = await fetchCostData(origin, destination);
+      if (!costData) return;
+      document.getElementById('originCityLabel').innerText = origin || 'Origin';
+      document.getElementById('destinationCityLabel').innerText = destination || 'Destination';
+      document.getElementById('originDining').innerText = `$${costData.origin.dining}`;
+      document.getElementById('destDining').innerText = `$${costData.destination.dining}`;
+      document.getElementById('originRent').innerText = `$${costData.origin.rent}`;
+      document.getElementById('destRent').innerText = `$${costData.destination.rent}`;
+      document.getElementById('originGroceries').innerText = `$${costData.origin.groceries}`;
+      document.getElementById('destGroceries').innerText = `$${costData.destination.groceries}`;
+      document.getElementById('originGas').innerText = `$${costData.origin.gas}`;
+      document.getElementById('destGas').innerText = `$${costData.destination.gas}`;
+      document.getElementById('originUtilities').innerText = `$${costData.origin.utilities}`;
+      document.getElementById('destUtilities').innerText = `$${costData.destination.utilities}`;
+      document.getElementById('originTaxes').innerText = `$${costData.origin.taxes}`;
+      document.getElementById('destTaxes').innerText = `$${costData.destination.taxes}`;
+      const originTotal = costData.origin.dining + costData.origin.rent + costData.origin.groceries + costData.origin.gas + costData.origin.utilities + costData.origin.taxes;
+      const destTotal = costData.destination.dining + costData.destination.rent + costData.destination.groceries + costData.destination.gas + costData.destination.utilities + costData.destination.taxes;
+      document.getElementById('originTotal').innerText = `$${originTotal}`;
+      document.getElementById('destTotal').innerText = `$${destTotal}`;
     }
-    
-    // ===== Update Cost of Living Chart =====
     async function updateCostChart(origin, destination) {
       const costData = await fetchCostData(origin, destination);
-      // Use dummy data if API responses are not available; adjust keys as needed
-      const originCosts = costData && costData.origin ? costData.origin : { totalCost: 3000, rent: 1500, groceries: 500, transportation: 300 };
-      const destCosts = costData && costData.destination ? costData.destination : { totalCost: 2000, rent: 1000, groceries: 400, transportation: 250 };
-
+      const originCosts = costData?.origin || { dining: 15, rent: 1500, groceries: 100, gas: 180, utilities: 150, taxes: 100 };
+      const destCosts = costData?.destination || { dining: 15, rent: 1500, groceries: 100, gas: 180, utilities: 150, taxes: 100 };
+      const originTotal = originCosts.dining + originCosts.rent + originCosts.groceries + originCosts.gas + originCosts.utilities + originCosts.taxes;
+      const destTotal = destCosts.dining + destCosts.rent + destCosts.groceries + destCosts.gas + destCosts.utilities + destCosts.taxes;
       const ctx = document.getElementById('costChart').getContext('2d');
       new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: ['Total Cost', 'Rent', 'Groceries', 'Transportation'],
+          labels: ['Dining', 'Rent', 'Groceries', 'Gas', 'Utilities', 'State Taxes', 'Total'],
           datasets: [
             {
               label: origin,
-              data: [originCosts.totalCost, originCosts.rent, originCosts.groceries, originCosts.transportation],
+              data: [originCosts.dining, originCosts.rent, originCosts.groceries, originCosts.gas, originCosts.utilities, originCosts.taxes, originTotal],
               backgroundColor: 'rgba(0,116,228,0.6)'
             },
             {
               label: destination,
-              data: [destCosts.totalCost, destCosts.rent, destCosts.groceries, destCosts.transportation],
+              data: [destCosts.dining, destCosts.rent, destCosts.groceries, destCosts.gas, destCosts.utilities, destCosts.taxes, destTotal],
               backgroundColor: 'rgba(255,99,132,0.6)'
             }
           ]
@@ -248,55 +718,51 @@
           title: {
             display: true,
             text: 'Cost of Living Comparison'
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
           }
         }
       });
     }
-    
-    // ===== Update Housing Market Information =====
+
+    // ====== Placeholder: Update Housing Info ======
     async function updateHousingInfo(city) {
-      const data = await fetchHousingData(city);
       const housingDiv = document.getElementById('housingInfo');
-      let housingHTML = '';
-      
-      // Use dummy data if actual API data is unavailable
-      if (!data) {
-        housingHTML = `<p>No real-time data available. Here is some sample info for ${city}:</p>
-          <ul>
-            <li>Median Home Price: $500,000</li>
-            <li>Market Trend: Stable</li>
-            <li>Days on Market: 45</li>
-          </ul>`;
-      } else {
-        // Parse and display actual data from the API (modify as per actual API response)
-        housingHTML = `<p>Median Home Price: $${data.medianPrice}</p>
-          <p>Market Trend: ${data.marketTrend}</p>
-          <p>Days on Market: ${data.daysOnMarket}</p>`;
-      }
-      housingDiv.innerHTML = housingHTML;
+      housingDiv.innerHTML = `
+        <p>No real-time housing data available for <strong>${city}</strong>. 
+        Here's some sample info for demonstration:</p>
+        <ul>
+          <li>Median Home Price: $500,000</li>
+          <li>Market Trend: Stable</li>
+          <li>Days on Market: 45</li>
+        </ul>
+      `;
     }
-    
-    // ===== Initialize Google Map =====
+
+    // ====== Initialize Google Map ======
     function initMap(city) {
-      // Google Maps Embed API URL – replace YOUR_GOOGLE_MAPS_API_KEY with your key
-      let mapSrc = '';
-      if (city === 'Austin') {
-        mapSrc = 'https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=Austin,TX';
-      } else if (city === 'Scottsdale') {
-        mapSrc = 'https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=Scottsdale,AZ';
-      } else {
-        mapSrc = 'https://www.google.com/maps/embed/v1/view?key=YOUR_GOOGLE_MAPS_API_KEY&center=39.8283,-98.5795&zoom=4';
-      }
-      document.getElementById('mapContainer').innerHTML = `<iframe width="100%" height="100%" frameborder="0" style="border:0" src="${mapSrc}" allowfullscreen></iframe>`;
+      let query = city || 'United States';
+      const mapSrc = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(query)}`;
+      document.getElementById('mapContainer').innerHTML = `
+        <iframe 
+          width="100%" 
+          height="100%" 
+          frameborder="0" 
+          style="border:0" 
+          src="${mapSrc}" 
+          allowfullscreen>
+        </iframe>
+      `;
     }
-    
-    // ===== Update Neighborhood Recommendations =====
-    function updateNeighborhoods(city, userPreferences) {
+
+    // ====== Neighborhood Recommendations ======
+    function updateNeighborhoods(city) {
       const neighborhoodsDiv = document.getElementById('neighborhoods');
       let recommendations = '';
-      
-      // Dummy recommendations based on city selection (customize as desired)
-      if (city === 'Austin') {
+      if (city.includes("Austin")) {
         recommendations = `
           <div class="neighborhood-card">
             <h3>Downtown Austin</h3>
@@ -306,8 +772,12 @@
             <h3>South Congress (SoCo)</h3>
             <p>Eclectic vibe with plenty of dining and boutique shopping options.</p>
           </div>
+          <div class="neighborhood-card">
+            <h3>West Lake Hills</h3>
+            <p>Upscale suburban feel, excellent schools, scenic hill country views.</p>
+          </div>
         `;
-      } else if (city === 'Scottsdale') {
+      } else if (city.includes("Scottsdale")) {
         recommendations = `
           <div class="neighborhood-card">
             <h3>Old Town Scottsdale</h3>
@@ -317,51 +787,186 @@
             <h3>North Scottsdale</h3>
             <p>Upscale neighborhoods with golf courses and top-rated schools.</p>
           </div>
+          <div class="neighborhood-card">
+            <h3>McCormick Ranch</h3>
+            <p>Master-planned community with lakes, parks, and easy resort access.</p>
+          </div>
         `;
+      } else {
+        recommendations = `<p>Please select Austin or Scottsdale to see neighborhood suggestions.</p>`;
       }
       neighborhoodsDiv.innerHTML = recommendations;
     }
-    
-    // ===== Form Submission Handler =====
-    document.getElementById('moveForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const originCity = document.getElementById('originCity').value;
-      const destinationCity = document.getElementById('destinationCity').value;
-      
-      // Update sections based on user input
-      updateCostChart(originCity, destinationCity);
-      updateHousingInfo(destinationCity);
-      initMap(destinationCity);
-      updateNeighborhoods(destinationCity, {});
-      
-      // Scroll to the Cost Comparison section for better UX
-      window.scrollTo({ top: document.getElementById('costComparison').offsetTop, behavior: 'smooth' });
-    });
+
+    // ====== Fun Facts ======
+    function updateFunFacts(city) {
+      const funFactsDiv = document.getElementById('funFacts');
+      let factsHtml = '';
+      if (city.includes("Austin")) {
+        factsHtml = `
+          <h4>Austin Fun Facts</h4>
+          <ul>
+            <li>Known as the "Live Music Capital of the World"—home to SXSW and ACL Fest.</li>
+            <li>Features more than 250 live music venues around the city.</li>
+            <li>Has a vibrant food truck scene and famous BBQ spots.</li>
+          </ul>
+        `;
+      } else if (city.includes("Scottsdale")) {
+        factsHtml = `
+          <h4>Scottsdale Fun Facts</h4>
+          <ul>
+            <li>Known for its luxurious spas, golf courses, and upscale living.</li>
+            <li>Hosts the famous Barrett-Jackson car auction each year.</li>
+            <li>Close to hiking hotspots like Camelback Mountain and McDowell Sonoran Preserve.</li>
+          </ul>
+        `;
+      } else {
+        factsHtml = `<p>Please select Austin or Scottsdale to see fun facts and events.</p>`;
+      }
+      funFactsDiv.innerHTML = factsHtml;
+      document.getElementById('carouselCityLabel').innerText = city.includes("Austin") ? "Austin" : "Scottsdale";
+    }
+
+    // ====== Local Event Calendar ======
+    function updateEventCalendar(city) {
+      const eventCalendarContainer = document.getElementById('eventCalendarContainer');
+      let tableHtml = `
+        <table>
+          <thead>
+            <tr>
+              <th>Date(s)</th>
+              <th>Event Name</th>
+              <th>Location</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      if (city.includes("Austin")) {
+        tableHtml += `
+          <tr>
+            <td>March 8-16</td>
+            <td>SXSW</td>
+            <td>Downtown Austin</td>
+            <td>Music, film, and interactive festival/conference</td>
+          </tr>
+          <tr>
+            <td>October</td>
+            <td>Austin City Limits (ACL)</td>
+            <td>Zilker Park</td>
+            <td>Two weekends of world-class music across multiple stages</td>
+          </tr>
+          <tr>
+            <td>Spring</td>
+            <td>Food & Wine Festival</td>
+            <td>Various Locations</td>
+            <td>Showcasing top chefs and restaurants</td>
+          </tr>
+        `;
+      } else if (city.includes("Scottsdale")) {
+        tableHtml += `
+          <tr>
+            <td>January</td>
+            <td>Barrett-Jackson Auction</td>
+            <td>WestWorld of Scottsdale</td>
+            <td>Classic car auction with worldwide attendance</td>
+          </tr>
+          <tr>
+            <td>Feb-Mar</td>
+            <td>Spring Training</td>
+            <td>Various Stadiums</td>
+            <td>Cactus League baseball games for MLB teams</td>
+          </tr>
+          <tr>
+            <td>Spring</td>
+            <td>Scottsdale Culinary Festival</td>
+            <td>Downtown Scottsdale</td>
+            <td>One of the nation's longest-running food festivals</td>
+          </tr>
+        `;
+      } else {
+        tableHtml += `
+          <tr>
+            <td colspan="4">Please select Austin or Scottsdale to see a local event calendar.</td>
+          </tr>
+        `;
+      }
+      tableHtml += `</tbody></table>`;
+      eventCalendarContainer.innerHTML = tableHtml;
+    }
+
+    // ====== Carousel Setup ======
+    function setupCarousel(city) {
+      const scottsdaleImages = [
+        "https://via.placeholder.com/300x200.png?text=Scottsdale+Fine+Dining",
+        "https://via.placeholder.com/300x200.png?text=Scottsdale+Music+Event",
+        "https://via.placeholder.com/300x200.png?text=Scottsdale+Sporting+Event",
+        "https://via.placeholder.com/300x200.png?text=Scottsdale+Housing",
+        "https://via.placeholder.com/300x200.png?text=Scottsdale+Park",
+        "https://via.placeholder.com/300x200.png?text=Scottsdale+Nightlife",
+        "https://via.placeholder.com/300x200.png?text=Scottsdale+Golf+Course",
+        "https://via.placeholder.com/300x200.png?text=Scottsdale+Resort",
+        "https://via.placeholder.com/300x200.png?text=Scottsdale+Art+Scene",
+        "https://via.placeholder.com/300x200.png?text=Scottsdale+Hiking",
+        "https://via.placeholder.com/300x200.png?text=Scottsdale+Spa",
+        "https://via.placeholder.com/300x200.png?text=Scottsdale+Shopping",
+        "https://via.placeholder.com/300x200.png?text=Scottsdale+Desert",
+        "https://via.placeholder.com/300x200.png?text=Scottsdale+Old+Town",
+        "https://via.placeholder.com/300x200.png?text=Scottsdale+Spring+Training"
+      ];
+      const austinImages = [
+        "https://via.placeholder.com/300x200.png?text=Austin+Fine+Dining",
+        "https://via.placeholder.com/300x200.png?text=Austin+Live+Music",
+        "https://via.placeholder.com/300x200.png?text=Austin+Sporting+Event",
+        "https://via.placeholder.com/300x200.png?text=Austin+Housing",
+        "https://via.placeholder.com/300x200.png?text=Austin+Park",
+        "https://via.placeholder.com/300x200.png?text=Austin+Nightlife",
+        "https://via.placeholder.com/300x200.png?text=Austin+BBQ",
+        "https://via.placeholder.com/300x200.png?text=Austin+Tech+Scene",
+        "https://via.placeholder.com/300x200.png?text=Austin+Hiking",
+        "https://via.placeholder.com/300x200.png?text=Austin+Lakes",
+        "https://via.placeholder.com/300x200.png?text=Austin+UT+Campus",
+        "https://via.placeholder.com/300x200.png?text=Austin+Food+Trucks",
+        "https://via.placeholder.com/300x200.png?text=Austin+History",
+        "https://via.placeholder.com/300x200.png?text=Austin+Festivals",
+        "https://via.placeholder.com/300x200.png?text=Austin+Rivers"
+      ];
+      const carouselTrack = document.getElementById('carouselTrack');
+      carouselTrack.innerHTML = "";
+
+      const images = city.includes("Scottsdale") ? scottsdaleImages : austinImages;
+
+      images.forEach(imgUrl => {
+        const slide = document.createElement('div');
+        slide.className = 'carousel-slide';
+        slide.innerHTML = `<img src="${imgUrl}" alt="Scene" />`;
+        carouselTrack.appendChild(slide);
+      });
+
+      // Basic carousel logic
+      let currentIndex = 0;
+      const slidesToShow = 3; // 3 images at a time
+      const totalSlides = images.length;
+
+      function updateCarousel() {
+        const slideWidth = document.querySelector('.carousel-slide').clientWidth;
+        carouselTrack.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+      }
+
+      document.getElementById('prevBtn').onclick = function() {
+        currentIndex = Math.max(currentIndex - 1, 0);
+        updateCarousel();
+      };
+      document.getElementById('nextBtn').onclick = function() {
+        const maxIndex = totalSlides - slidesToShow;
+        currentIndex = Math.min(currentIndex + 1, maxIndex);
+        updateCarousel();
+      };
+
+      // Reset to the first slide each time user changes city
+      currentIndex = 0;
+      updateCarousel();
+    }
   </script>
-
-  <!-- Deployment & Setup Instructions (detailed below) -->
-  <!--
-  ---------------- Deployment & Setup Instructions ----------------
-
-  1. Google Form & Google Sheet Setup:
-     - Create a new Google Form with fields matching the inputs (or use the embedded form here).
-     - In the Google Form, go to "Responses" → click the three dots → "Select response destination" to create a new Google Sheet.
-     - Replace the iframe's src URL with your form’s embed URL.
-  
-  2. API Keys:
-     - Sign up with Numbeo to obtain your API key and replace 'YOUR_NUMBEO_API_KEY' in the script.
-     - If Realtor.com offers an API, sign up to obtain a key and replace 'YOUR_REALTOR_API_KEY'.
-     - For Google Maps, get an API key from Google Cloud Platform and replace 'YOUR_GOOGLE_MAPS_API_KEY' in the initMap function.
-  
-  3. Deploying on GitHub Pages:
-     - Create a new GitHub repository (e.g., "relocation-guide").
-     - Add this index.html file to the repository.
-     - Commit and push the file to the main branch.
-     - In your repository, navigate to Settings → GitHub Pages.
-     - Under "Source", select the main branch (or the folder where index.html is located) and save.
-     - Your site will be live at https://<your-username>.github.io/relocation-guide/.
-  
-  -------------------------------------------------------------------
-  -->
 </body>
 </html>
