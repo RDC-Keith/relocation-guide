@@ -137,8 +137,9 @@ iframe {
   text-align: center;
 }
 #carouselImage {
-  max-width: 100%;
-  height: auto;
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
   border-radius: 5px;
 }
 @media (max-width: 768px) {
