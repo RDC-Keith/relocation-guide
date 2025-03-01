@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <!-- Header Section with Logo and Title -->
+  <!-- Header Section -->
   <header>
     <img src="https://via.placeholder.com/400x100?text=Realtor.com+Logo" alt="Realtor.com Logo" />
     <h1>Relocate with Confidence: Explore Austin & Scottsdale</h1>
@@ -22,9 +22,8 @@
       <h2>Welcome!</h2>
       <p>
         We understand that considering a move is a big decision—especially when it means uprooting your life for a new opportunity.
-        This guide is designed to provide you with an in-depth comparison of your current location with two amazing destinations: Austin, TX and Scottsdale, AZ.
-        Explore everything from housing, job markets, lifestyle, schools, taxes, entertainment, and cost of living.
-        Our goal is to make your decision as informed and easy as possible!
+        This guide provides an in-depth comparison between your current city and your desired destination (Austin or Scottsdale).
+        Explore housing, job markets, lifestyle, schools, taxes, entertainment, and overall quality of life.
       </p>
     </div>
 
@@ -67,36 +66,33 @@
 
         <div class="sub-section-title">What Are You Looking For In Your Future Residence?</div>
         <p class="form-hint">
-          Consider whether you’re open to renting first, the amenities you want (pool, gym, pet-friendly, etc.), proximity to work or downtown, transit options, school quality, food and nightlife, and more.
+          Consider amenities (pool, gym, pet-friendly), proximity to work, transit options, school quality, food, and nightlife.
         </p>
-        <textarea id="futureResidence" rows="4" placeholder="Tell us about your must-haves, nice-to-haves, and any special requests..." required></textarea>
+        <textarea id="futureResidence" rows="4" placeholder="Tell us about your must-haves and nice-to-haves..." required></textarea>
 
-        <label for="familyMakeup">Who Are We Helping Move? (Single, Couple, Kids, Extended Family, etc.)</label>
-        <input type="text" id="familyMakeup" placeholder="e.g. 'Me and my partner, plus two kids'"/>
+        <label for="familyMakeup">Who Are We Helping Move? (Single, Couple, Kids, etc.)</label>
+        <input type="text" id="familyMakeup" placeholder="e.g. 'Me, my partner, and two kids'"/>
 
         <div class="sub-section-title">What Kind of Help Will You Need?</div>
         <p class="form-hint">
-          Describe any moving challenges, additional costs, or assistance you might need (e.g., lease break fees, moving costs).
+          Describe any moving challenges or additional costs (e.g. lease break fees, moving expenses).
         </p>
-        <textarea id="assistanceDescription" rows="4" placeholder="Let us know the moving assistance details..."></textarea>
+        <textarea id="assistanceDescription" rows="4" placeholder="Provide details..." ></textarea>
 
-        <label for="assistanceAmount">What's Your Best Estimate of the Total Assistance You'd Need?</label>
+        <label for="assistanceAmount">Estimated Total Assistance Needed:</label>
         <select id="assistanceAmount" required>
           <option value="">Select an option</option>
           <option value="5K">$5,000</option>
           <option value="10K">$10,000</option>
           <option value="15K">$15,000</option>
-          <option value="15K+">More than $15,000 (may need a small exception)</option>
+          <option value="15K+">More than $15,000</option>
         </select>
 
         <label for="arrivalTime">When Are You Aiming to Arrive?</label>
         <input type="date" id="arrivalTime" required>
 
-        <div class="sub-section-title">Why Are You Interested in Moving? (The More Personal, The Better!)</div>
-        <p class="form-hint">
-          Share your story, motivations, and what you hope to gain from this move.
-        </p>
-        <textarea id="motivation" rows="4" placeholder="Share your story..." required></textarea>
+        <div class="sub-section-title">Why Are You Interested in Moving? (Tell us your story)</div>
+        <textarea id="motivation" rows="4" placeholder="Share your motivations..." required></textarea>
 
         <label for="destinationCity">Where Are You Considering Moving To?</label>
         <select id="destinationCity" required>
@@ -109,13 +105,13 @@
       </form>
     </div>
 
-    <!-- PART 2: Current vs Desired Home Details (Existing Section) -->
+    <!-- PART 2: Current vs Desired Home Details -->
     <div class="section form-section" id="livingSituation">
       <h2>Compare Your Current & Future Home Details</h2>
       <p>
-        Provide details about your current living situation and what you’d like in your new place.
+        Provide details about your current living situation and your desired new home.
       </p>
-      <!-- (Retain your original current and desired home forms here) -->
+      <!-- (Your current and desired home forms go here) -->
       <button type="button" id="compareBtn" style="margin-top:20px; display:none;">Show My Cost Comparison</button>
       <div class="table-container" id="costTableContainer" style="display:none;">
         <h3>Cost of Living Breakdown</h3>
@@ -174,32 +170,34 @@
       <canvas id="costChart"></canvas>
     </div>
 
-    <!-- NEW PART 4: City Carousel -->
+    <!-- PART 4: City Carousel -->
     <div class="section" id="cityCarousel">
       <h2>Explore Your New City</h2>
-      <div id="carouselContainer">
-        <!-- The carousel image will change based on the chosen destination -->
-        <img id="carouselImage" src="assets/images/austin-carousel1.jpg" alt="City Carousel Image" />
+      <!-- Carousel Buttons above the image -->
+      <div id="carouselButtons" style="text-align:center; margin-bottom:10px;">
+        <button id="prevBtn">← Prev</button>
+        <button id="nextBtn">Next →</button>
       </div>
-      <button id="prevBtn">← Prev</button>
-      <button id="nextBtn">Next →</button>
+      <div id="carouselContainer" style="text-align:center;">
+        <img id="carouselImage" src="assets/images/austin_farmers_market.webp" alt="City Carousel Image" />
+      </div>
     </div>
 
-    <!-- NEW PART 5: Additional Relocation Information (Collapsible Sections) -->
+    <!-- PART 5: Additional Relocation Information -->
     <div class="section" id="additionalInfo">
       <h2>Explore More About Your Future Life</h2>
+
+      <!-- Example collapsible sections -->
       <details open>
         <summary>🏠 Housing Overview – Find the right neighborhood</summary>
-        <p>
-          Discover housing market trends, property values, and neighborhood vibes in Austin and Scottsdale.
-        </p>
+        <p>Discover housing market trends, property values, and neighborhood vibes in Austin and Scottsdale.</p>
       </details>
 
       <details>
         <summary>💼 Job Market & Career Opportunities – Grow your career</summary>
         <p>
-          Explore current trends in the tech industry, local job growth, and career opportunities.
-          Use our interactive job listings tool below to see available roles at your chosen organization.
+          Explore tech industry trends, local job growth, and career opportunities.
+          Use our job listings tool below to see current openings.
         </p>
         <div class="job-section">
           <label for="organizationSelect">Select Your Organization:</label>
@@ -210,37 +208,28 @@
             <option value="partnerB">Partner Company B</option>
           </select>
           <p>Current job openings (powered by Greenhouse):</p>
-          <!-- Replace the src with your actual Greenhouse embed URL -->
           <iframe id="jobListingsFrame" src="https://boards.greenhouse.io/embed/job_board?for=realtor" width="100%" height="400"></iframe>
         </div>
       </details>
 
       <details>
         <summary>🎓 Schools & Education – For families and lifelong learners</summary>
-        <p>
-          Get insights into the best school districts, local universities, and educational opportunities.
-        </p>
+        <p>Get insights into the best school districts, local universities, and educational opportunities.</p>
       </details>
 
       <details>
         <summary>💰 Cost of Living Comparison – Know your numbers</summary>
-        <p>
-          Compare everyday expenses – from dining and utilities to taxes – between your current city and your new destination.
-        </p>
+        <p>Compare everyday expenses – dining, utilities, taxes, and more – between your current city and your new destination.</p>
       </details>
 
       <details>
         <summary>🌆 Lifestyle & Culture – What makes each city unique</summary>
-        <p>
-          Learn about the cultural highlights, dining, nightlife, and recreational activities in each city.
-        </p>
+        <p>Learn about the cultural highlights, dining, nightlife, and recreational activities in each city.</p>
       </details>
 
       <details>
         <summary>🎉 Recreation & Entertainment – Live life to the fullest</summary>
-        <p>
-          Whether it’s live music in Austin or outdoor adventures in Scottsdale, discover what makes each city an exciting place to call home.
-        </p>
+        <p>Whether it’s live music or outdoor adventures, find out what makes each city exciting.</p>
       </details>
 
       <details>
@@ -248,23 +237,52 @@
         <p>
           Realtor.com is a leading online real estate marketplace owned by News Corp.
           We connect buyers, sellers, and renters with high-quality listings and real estate professionals.
-          Our robust revenue model includes advertising, lead generation, and premium services.
         </p>
+      </details>
+
+      <!-- New Numbeo Data Section -->
+      <details>
+        <summary>📊 Numbeo Data – Cost of Living, Property Prices, Quality of Life</summary>
+        <div>
+          <h4>Cost of Living</h4>
+          <div>
+            <strong>Current City:</strong>
+            <div id="numbeoCostOfLivingOrigin">Loading...</div>
+          </div>
+          <div>
+            <strong>Desired Destination:</strong>
+            <div id="numbeoCostOfLivingDest">Loading...</div>
+          </div>
+          <h4>Property Prices</h4>
+          <div>
+            <strong>Current City:</strong>
+            <div id="numbeoPropertyPricesOrigin">Loading...</div>
+          </div>
+          <div>
+            <strong>Desired Destination:</strong>
+            <div id="numbeoPropertyPricesDest">Loading...</div>
+          </div>
+          <h4>Quality of Life</h4>
+          <div>
+            <strong>Current City:</strong>
+            <div id="numbeoQualityOfLifeOrigin">Loading...</div>
+          </div>
+          <div>
+            <strong>Desired Destination:</strong>
+            <div id="numbeoQualityOfLifeDest">Loading...</div>
+          </div>
+        </div>
       </details>
 
       <details>
         <summary>📑 Benefits & Perks – See what we offer</summary>
-        <p>
-          Discover our comprehensive benefits package. Use the embedded guide below for full details.
-        </p>
+        <p>Discover our comprehensive benefits package. Use the embedded guide below for full details.</p>
         <iframe src="assets/pdf/2025-U.S.-Benefits-Guide-FINAL-FINAL.pdf" width="100%" height="600"></iframe>
       </details>
 
       <details>
         <summary>📞 Contact & Next Steps – Get in touch</summary>
-        <p>
-          Have questions or ready to take the next step? Reach out to our recruiting team:
-        </p>
+        <p>Have questions or ready to take the next step? Reach out to our recruiting team:</p>
         <ul>
           <li>Email: recruiter@realtor.com</li>
           <li>Phone: (555) 123-4567</li>
@@ -272,7 +290,7 @@
       </details>
     </div>
 
-    <!-- PART 6: Housing Market Insights (Existing Section) -->
+    <!-- PART 6: Housing Market Insights -->
     <div class="section" id="housingData">
       <h2>Housing Market Insights</h2>
       <div id="housingInfo">
@@ -282,15 +300,12 @@
       </div>
     </div>
 
-    <!-- PART 7: Explore Your New City (Map & Neighborhood Recommendations) -->
+    <!-- PART 7: Map & Neighborhood Recommendations -->
     <div class="section" id="cityMap">
       <h2>Explore Your New City</h2>
-      <div class="map-container" id="mapContainer">
-        <!-- Google Map will be injected here by JS -->
-      </div>
+      <div class="map-container" id="mapContainer"></div>
     </div>
 
-    <!-- PART 8: Neighborhood Recommendations -->
     <div class="section" id="neighborhoodRec">
       <h2>Neighborhood Recommendations</h2>
       <div id="neighborhoods">
@@ -305,14 +320,14 @@
       </div>
     </div>
 
-    <!-- PART 9: Embedded Google Form Section for Direct Contact -->
+    <!-- PART 8: Embedded Google Form for Direct Contact -->
     <div class="section" id="googleFormSection">
       <h2>Get in Touch with Our Team</h2>
       <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfDUMMYFORMID/viewform?embedded=true" width="100%" height="800" frameborder="0">Loading…</iframe>
     </div>
   </div>
 
-  <!-- Link to JavaScript -->
+  <!-- Link to main.js -->
   <script src="js/main.js"></script>
 </body>
 </html>
