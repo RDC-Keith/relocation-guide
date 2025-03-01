@@ -1,3 +1,4 @@
+
 /*************************************************************
  * main.js - Relocation Guide: Austin & Scottsdale
  *
@@ -6,16 +7,35 @@
  * - Implements a carousel for city images (15 for Austin, 2 for Scottsdale).
  * - Fetches and displays Numbeo data (cost of living, property prices, quality of life)
  *   for both the candidate’s current city and desired destination.
- * - Contains existing functionality for cost-of-living comparisons, housing info, maps, etc.
+ * - Contains existing functionality for cost comparisons, housing info, maps, etc.
  *
- * Make sure your index.html contains placeholders (divs) with the IDs referenced below.
+ * All API calls now use only the "city" parameter (assumed to be in the United States).
  *************************************************************/
 
 // Replace these with your actual API keys:
 const NUMBEO_API_KEY = 'ydwk8vb0prixpe';
 const GOOGLE_MAPS_API_KEY = 'AIzaSyBXm1ezEjfsjdDB-f26OAztdiRldLIM8X4';
 
-// Global variables
+// Mapping for cities (maps user-friendly names to "City, State" strings)
+const cityMappings = {
+  "San Francisco": { city: "San Francisco, CA" },
+  "Seattle": { city: "Seattle, WA" },
+  "New York": { city: "New York, NY" },
+  "Los Angeles": { city: "Los Angeles, CA" },
+  "Boston": { city: "Boston, MA" },
+  "Chicago": { city: "Chicago, IL" },
+  "Denver": { city: "Denver, CO" },
+  "Atlanta": { city: "Atlanta, GA" },
+  "Austin": { city: "Austin, TX" },
+  "Raleigh": { city: "Raleigh, NC" },
+  "Dallas": { city: "Dallas, TX" },
+  "San Diego": { city: "San Diego, CA" },
+  "San Jose": { city: "San Jose, CA" },
+  "Portland": { city: "Portland, OR" },
+  "Phoenix": { city: "Phoenix, AZ" },
+  "Scottsdale": { city: "Scottsdale, AZ" }
+};
+
 let selectedOriginCity = '';
 let selectedDestinationCity = '';
 let currentHomeSaved = false;
@@ -119,7 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
 /* --------------------- NUMBEO API FUNCTIONS --------------------- */
 
 /**
- * Fetch cost of living data from Numbeo for a given city.
+ * Fetch cost of living data from Numbeo.
+ * Uses only the city parameter (assumes United States).
  */
 async function fetchNumbeoCostOfLiving(city) {
   try {
@@ -132,7 +153,7 @@ async function fetchNumbeoCostOfLiving(city) {
 }
 
 /**
- * Fetch property prices data from Numbeo for a given city.
+ * Fetch property prices data from Numbeo.
  */
 async function fetchNumbeoPropertyPrices(city) {
   try {
@@ -145,7 +166,7 @@ async function fetchNumbeoPropertyPrices(city) {
 }
 
 /**
- * Fetch quality of life data from Numbeo for a given city.
+ * Fetch quality of life data from Numbeo.
  */
 async function fetchNumbeoQualityOfLife(city) {
   try {
@@ -158,37 +179,38 @@ async function fetchNumbeoQualityOfLife(city) {
 }
 
 /**
- * Format and display Numbeo data.
+ * Simple formatter for Numbeo JSON data.
  */
 function formatNumbeoData(data) {
   if (!data) return 'Data unavailable.';
+  if (data.error_message) return data.error_message;
   return `<pre>${JSON.stringify(data, null, 2)}</pre>`;
 }
 
 /**
- * Update Numbeo data for both the current city and desired destination.
- * Requires placeholder elements with the following IDs:
- * - numbeoCostOfLivingOrigin, numbeoCostOfLivingDest
- * - numbeoPropertyPricesOrigin, numbeoPropertyPricesDest
- * - numbeoQualityOfLifeOrigin, numbeoQualityOfLifeDest
+ * Update Numbeo data for the current and destination cities.
+ * Uses the mapped city names (e.g., "Austin, TX") from cityMappings.
  */
 async function updateNumbeoData() {
   if (selectedOriginCity && selectedDestinationCity) {
+    const mappedOrigin = cityMappings[selectedOriginCity] ? cityMappings[selectedOriginCity].city : selectedOriginCity;
+    const mappedDest = cityMappings[selectedDestinationCity] ? cityMappings[selectedDestinationCity].city : selectedDestinationCity;
+    
     // Cost of Living
-    const costOrigin = await fetchNumbeoCostOfLiving(selectedOriginCity);
-    const costDest = await fetchNumbeoCostOfLiving(selectedDestinationCity);
+    const costOrigin = await fetchNumbeoCostOfLiving(mappedOrigin);
+    const costDest = await fetchNumbeoCostOfLiving(mappedDest);
     document.getElementById('numbeoCostOfLivingOrigin').innerHTML = formatNumbeoData(costOrigin);
     document.getElementById('numbeoCostOfLivingDest').innerHTML = formatNumbeoData(costDest);
-
+    
     // Property Prices
-    const propOrigin = await fetchNumbeoPropertyPrices(selectedOriginCity);
-    const propDest = await fetchNumbeoPropertyPrices(selectedDestinationCity);
+    const propOrigin = await fetchNumbeoPropertyPrices(mappedOrigin);
+    const propDest = await fetchNumbeoPropertyPrices(mappedDest);
     document.getElementById('numbeoPropertyPricesOrigin').innerHTML = formatNumbeoData(propOrigin);
     document.getElementById('numbeoPropertyPricesDest').innerHTML = formatNumbeoData(propDest);
-
+    
     // Quality of Life
-    const qolOrigin = await fetchNumbeoQualityOfLife(selectedOriginCity);
-    const qolDest = await fetchNumbeoQualityOfLife(selectedDestinationCity);
+    const qolOrigin = await fetchNumbeoQualityOfLife(mappedOrigin);
+    const qolDest = await fetchNumbeoQualityOfLife(mappedDest);
     document.getElementById('numbeoQualityOfLifeOrigin').innerHTML = formatNumbeoData(qolOrigin);
     document.getElementById('numbeoQualityOfLifeDest').innerHTML = formatNumbeoData(qolDest);
   }
@@ -198,7 +220,7 @@ async function updateNumbeoData() {
 
 /* --------------------- EXISTING FUNCTIONALITY --------------------- */
 
-// Dummy cost-of-living data fetch
+// Dummy cost-of-living data fetch for cost table (for demonstration)
 async function fetchCostData(origin, destination) {
   try {
     const originData = { dining: 350, rent: 1800, groceries: 500, gas: 200, utilities: 250, taxes: 300 };
@@ -342,4 +364,3 @@ function changeCarousel(direction) {
   }
 }
 /* --------------------- END CAROUSEL FUNCTIONS --------------------- */
-
