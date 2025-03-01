@@ -1,0 +1,148 @@
+/* General Styles */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f8f8f8;
+  color: #333;
+  line-height: 1.6;
+}
+header {
+  text-align: center;
+  padding: 20px;
+  background-color: #0074e4;
+  color: white;
+}
+header img {
+  max-width: 200px;
+  margin-bottom: 10px;
+}
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+.intro {
+  background-color: #eaf4ff;
+  padding: 20px;
+  margin-bottom: 30px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+.intro h2 {
+  margin-top: 0;
+}
+.section {
+  margin: 40px 0;
+}
+.section h2 {
+  margin-bottom: 20px;
+}
+.form-section {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+label {
+  display: block;
+  font-weight: bold;
+  margin: 10px 0 5px;
+}
+select, input[type="text"], input[type="date"], textarea, input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+.form-hint {
+  font-size: 0.9em;
+  color: #555;
+  margin: -10px 0 10px;
+}
+button {
+  background-color: #0074e4;
+  color: #fff;
+  border: none;
+  padding: 15px 30px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #005bb5;
+}
+.map-container {
+  width: 100%;
+  height: 400px;
+  margin-top: 20px;
+}
+.table-container {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+.neighborhood-card {
+  background: #fff;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.sub-section-title {
+  font-size: 1.2em;
+  margin: 25px 0 10px;
+  font-weight: bold;
+  color: #0074e4;
+}
+/* Collapsible Sections */
+details {
+  background: #fff;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+}
+summary {
+  font-weight: bold;
+  cursor: pointer;
+  list-style: none;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+/* Job and Contact Sections */
+.job-section, .contact-section {
+  background: #eaf4ff;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 5px;
+}
+.job-section select {
+  max-width: 300px;
+}
+iframe {
+  border: none;
+}
+#carouselContainer {
+  text-align: center;
+}
+#carouselImage {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+@media (max-width: 768px) {
+  .map-container {
+    height: 300px;
+  }
+}

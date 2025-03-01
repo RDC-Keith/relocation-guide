@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Relocation Guide: Austin & Scottsdale</title>
+  <!-- Include Chart.js from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Link to CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Header Section with Logo and Title -->
+  <header>
+    <img src="https://via.placeholder.com/400x100?text=Realtor.com+Logo" alt="Realtor.com Logo" />
+    <h1>Relocate with Confidence: Explore Austin & Scottsdale</h1>
+  </header>
+
+  <div class="container">
+    <!-- Introduction Section -->
+    <div class="intro">
+      <h2>Welcome!</h2>
+      <p>
+        We understand that considering a move is a big decision—especially when it means uprooting your life for a new opportunity.
+        This guide is designed to provide you with an in-depth comparison of your current location with two amazing destinations: Austin, TX and Scottsdale, AZ.
+        Explore everything from housing, job markets, lifestyle, schools, taxes, entertainment, and cost of living.
+        Our goal is to make your decision as informed and easy as possible!
+      </p>
+    </div>
+
+    <!-- PART 1: Plan Your Move Form Section -->
+    <div class="section form-section" id="userInput">
+      <h2>Plan Your Move</h2>
+      <form id="moveForm">
+        <label for="originCity">Which Tech Hub Are You Coming From?</label>
+        <select id="originCity" required>
+          <option value="">Select your city</option>
+          <option value="San Francisco">San Francisco</option>
+          <option value="Seattle">Seattle</option>
+          <option value="New York">New York</option>
+          <option value="Los Angeles">Los Angeles</option>
+          <option value="Boston">Boston</option>
+          <option value="Chicago">Chicago</option>
+          <option value="Denver">Denver</option>
+          <option value="Atlanta">Atlanta</option>
+          <option value="Austin">Austin</option>
+          <option value="Raleigh">Raleigh</option>
+          <option value="Dallas">Dallas</option>
+          <option value="San Diego">San Diego</option>
+          <option value="San Jose">San Jose</option>
+          <option value="Portland">Portland</option>
+          <option value="Phoenix">Phoenix</option>
+          <option value="Other">Don’t see your City? Add it here...</option>
+        </select>
+        <div id="otherCityContainer" style="display:none;">
+          <label for="otherCity">Enter Your City:</label>
+          <input type="text" id="otherCity" placeholder="Type your city here"/>
+        </div>
+
+        <div class="sub-section-title">What if we really did move? Let's explore!</div>
+        <label for="sellHome">Do you need to sell your home?</label>
+        <select id="sellHome" required>
+          <option value="">Select an option</option>
+          <option value="yes">Yes, I'll be selling my home.</option>
+          <option value="no">No, I don't own a home or don't plan to sell.</option>
+        </select>
+
+        <div class="sub-section-title">What Are You Looking For In Your Future Residence?</div>
+        <p class="form-hint">
+          Consider whether you’re open to renting first, the amenities you want (pool, gym, pet-friendly, etc.), proximity to work or downtown, transit options, school quality, food and nightlife, and more.
+        </p>
+        <textarea id="futureResidence" rows="4" placeholder="Tell us about your must-haves, nice-to-haves, and any special requests..." required></textarea>
+
+        <label for="familyMakeup">Who Are We Helping Move? (Single, Couple, Kids, Extended Family, etc.)</label>
+        <input type="text" id="familyMakeup" placeholder="e.g. 'Me and my partner, plus two kids'"/>
+
+        <div class="sub-section-title">What Kind of Help Will You Need?</div>
+        <p class="form-hint">
+          Describe any moving challenges, additional costs, or assistance you might need (e.g., lease break fees, moving costs).
+        </p>
+        <textarea id="assistanceDescription" rows="4" placeholder="Let us know the moving assistance details..."></textarea>
+
+        <label for="assistanceAmount">What's Your Best Estimate of the Total Assistance You'd Need?</label>
+        <select id="assistanceAmount" required>
+          <option value="">Select an option</option>
+          <option value="5K">$5,000</option>
+          <option value="10K">$10,000</option>
+          <option value="15K">$15,000</option>
+          <option value="15K+">More than $15,000 (may need a small exception)</option>
+        </select>
+
+        <label for="arrivalTime">When Are You Aiming to Arrive?</label>
+        <input type="date" id="arrivalTime" required>
+
+        <div class="sub-section-title">Why Are You Interested in Moving? (The More Personal, The Better!)</div>
+        <p class="form-hint">
+          Share your story, motivations, and what you hope to gain from this move.
+        </p>
+        <textarea id="motivation" rows="4" placeholder="Share your story..." required></textarea>
+
+        <label for="destinationCity">Where Are You Considering Moving To?</label>
+        <select id="destinationCity" required>
+          <option value="">Select your destination</option>
+          <option value="Austin">Austin</option>
+          <option value="Scottsdale">Scottsdale</option>
+        </select>
+
+        <button type="submit">Submit & Start Crafting Your Journey</button>
+      </form>
+    </div>
+
+    <!-- PART 2: Current vs Desired Home Details (Existing Section) -->
+    <div class="section form-section" id="livingSituation">
+      <h2>Compare Your Current & Future Home Details</h2>
+      <p>
+        Provide details about your current living situation and what you’d like in your new place.
+      </p>
+      <!-- (Retain your original current and desired home forms here) -->
+      <button type="button" id="compareBtn" style="margin-top:20px; display:none;">Show My Cost Comparison</button>
+      <div class="table-container" id="costTableContainer" style="display:none;">
+        <h3>Cost of Living Breakdown</h3>
+        <table id="costTable">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th id="originCityLabel">Origin</th>
+              <th id="destinationCityLabel">Destination</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Dining</td>
+              <td id="originDining"></td>
+              <td id="destDining"></td>
+            </tr>
+            <tr>
+              <td>Rent</td>
+              <td id="originRent"></td>
+              <td id="destRent"></td>
+            </tr>
+            <tr>
+              <td>Groceries</td>
+              <td id="originGroceries"></td>
+              <td id="destGroceries"></td>
+            </tr>
+            <tr>
+              <td>Gas</td>
+              <td id="originGas"></td>
+              <td id="destGas"></td>
+            </tr>
+            <tr>
+              <td>Utilities</td>
+              <td id="originUtilities"></td>
+              <td id="destUtilities"></td>
+            </tr>
+            <tr>
+              <td>State Taxes</td>
+              <td id="originTaxes"></td>
+              <td id="destTaxes"></td>
+            </tr>
+            <tr style="font-weight:bold;">
+              <td>Total Estimated Monthly</td>
+              <td id="originTotal"></td>
+              <td id="destTotal"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PART 3: Visual Cost Comparison Chart -->
+    <div class="section" id="costComparison">
+      <h2>Visual Cost Comparison</h2>
+      <canvas id="costChart"></canvas>
+    </div>
+
+    <!-- NEW PART 4: City Carousel -->
+    <div class="section" id="cityCarousel">
+      <h2>Explore Your New City</h2>
+      <div id="carouselContainer">
+        <!-- The carousel image will change based on the chosen destination -->
+        <img id="carouselImage" src="assets/images/austin-carousel1.jpg" alt="City Carousel Image" />
+      </div>
+      <button id="prevBtn">← Prev</button>
+      <button id="nextBtn">Next →</button>
+    </div>
+
+    <!-- NEW PART 5: Additional Relocation Information (Collapsible Sections) -->
+    <div class="section" id="additionalInfo">
+      <h2>Explore More About Your Future Life</h2>
+      <details open>
+        <summary>🏠 Housing Overview – Find the right neighborhood</summary>
+        <p>
+          Discover housing market trends, property values, and neighborhood vibes in Austin and Scottsdale.
+        </p>
+      </details>
+
+      <details>
+        <summary>💼 Job Market & Career Opportunities – Grow your career</summary>
+        <p>
+          Explore current trends in the tech industry, local job growth, and career opportunities.
+          Use our interactive job listings tool below to see available roles at your chosen organization.
+        </p>
+        <div class="job-section">
+          <label for="organizationSelect">Select Your Organization:</label>
+          <select id="organizationSelect">
+            <option value="">Choose an organization</option>
+            <option value="realtor">Realtor.com</option>
+            <option value="partnerA">Partner Company A</option>
+            <option value="partnerB">Partner Company B</option>
+          </select>
+          <p>Current job openings (powered by Greenhouse):</p>
+          <!-- Replace the src with your actual Greenhouse embed URL -->
+          <iframe id="jobListingsFrame" src="https://boards.greenhouse.io/embed/job_board?for=realtor" width="100%" height="400"></iframe>
+        </div>
+      </details>
+
+      <details>
+        <summary>🎓 Schools & Education – For families and lifelong learners</summary>
+        <p>
+          Get insights into the best school districts, local universities, and educational opportunities.
+        </p>
+      </details>
+
+      <details>
+        <summary>💰 Cost of Living Comparison – Know your numbers</summary>
+        <p>
+          Compare everyday expenses – from dining and utilities to taxes – between your current city and your new destination.
+        </p>
+      </details>
+
+      <details>
+        <summary>🌆 Lifestyle & Culture – What makes each city unique</summary>
+        <p>
+          Learn about the cultural highlights, dining, nightlife, and recreational activities in each city.
+        </p>
+      </details>
+
+      <details>
+        <summary>🎉 Recreation & Entertainment – Live life to the fullest</summary>
+        <p>
+          Whether it’s live music in Austin or outdoor adventures in Scottsdale, discover what makes each city an exciting place to call home.
+        </p>
+      </details>
+
+      <details>
+        <summary>🏢 About Realtor.com – Our story & market position</summary>
+        <p>
+          Realtor.com is a leading online real estate marketplace owned by News Corp.
+          We connect buyers, sellers, and renters with high-quality listings and real estate professionals.
+          Our robust revenue model includes advertising, lead generation, and premium services.
+        </p>
+      </details>
+
+      <details>
+        <summary>📑 Benefits & Perks – See what we offer</summary>
+        <p>
+          Discover our comprehensive benefits package. Use the embedded guide below for full details.
+        </p>
+        <iframe src="assets/pdf/2025-U.S.-Benefits-Guide-FINAL-FINAL.pdf" width="100%" height="600"></iframe>
+      </details>
+
+      <details>
+        <summary>📞 Contact & Next Steps – Get in touch</summary>
+        <p>
+          Have questions or ready to take the next step? Reach out to our recruiting team:
+        </p>
+        <ul>
+          <li>Email: recruiter@realtor.com</li>
+          <li>Phone: (555) 123-4567</li>
+        </ul>
+      </details>
+    </div>
+
+    <!-- PART 6: Housing Market Insights (Existing Section) -->
+    <div class="section" id="housingData">
+      <h2>Housing Market Insights</h2>
+      <div id="housingInfo">
+        <p>Median Home Price: $500,000</p>
+        <p>Market Trend: Stable</p>
+        <p>Days on Market: 45</p>
+      </div>
+    </div>
+
+    <!-- PART 7: Explore Your New City (Map & Neighborhood Recommendations) -->
+    <div class="section" id="cityMap">
+      <h2>Explore Your New City</h2>
+      <div class="map-container" id="mapContainer">
+        <!-- Google Map will be injected here by JS -->
+      </div>
+    </div>
+
+    <!-- PART 8: Neighborhood Recommendations -->
+    <div class="section" id="neighborhoodRec">
+      <h2>Neighborhood Recommendations</h2>
+      <div id="neighborhoods">
+        <div class="neighborhood-card">
+          <h3>Downtown Austin</h3>
+          <p>Great for young professionals, vibrant nightlife, and tech opportunities.</p>
+        </div>
+        <div class="neighborhood-card">
+          <h3>Old Town Scottsdale</h3>
+          <p>Lively area with excellent dining, nightlife, and a rich arts scene.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PART 9: Embedded Google Form Section for Direct Contact -->
+    <div class="section" id="googleFormSection">
+      <h2>Get in Touch with Our Team</h2>
+      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfDUMMYFORMID/viewform?embedded=true" width="100%" height="800" frameborder="0">Loading…</iframe>
+    </div>
+  </div>
+
+  <!-- Link to JavaScript -->
+  <script src="js/main.js"></script>
+</body>
+</html>
