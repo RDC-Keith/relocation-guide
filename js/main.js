@@ -3,26 +3,15 @@
  *           Housing Prices Comparison, and Google Maps with a
  *           custom Realtor.com marker.
  *
- * Features:
- * - Two form fields: "Which Tech Hub Are You Coming From?" and 
- *   "Where Are You Considering Moving To?" (using full city strings)
- * - Uses Numbeo's API (with the query= parameter) to fetch:
- *      • cost_of_living
- *      • property_prices
- *      • quality_of_life
- * - Parses cost_of_living data via parseNumbeoCostData() and builds a Chart.js bar chart.
- * - Parses property_prices data via parseNumbeoPropertyPrices() and builds a housing prices chart.
- * - Displays raw Numbeo JSON in dedicated placeholders.
- * - Uses the Google Maps JavaScript API to display a map for the destination,
- *   and adds a custom marker (house emoji) for Realtor.com's address.
- * - Includes a simple carousel.
+ * Key update: We explicitly reassign the selected dropdown 
+ * values after form submission, so they remain chosen.
  *************************************************************/
 
 // Replace these with your actual API keys:
-const NUMBEO_API_KEY = 'ydwk8vb0prixpe';
-const GOOGLE_MAPS_API_KEY = 'AIzaSyBXm1ezEjfsjdDB-f26OAztdiRldLIM8X4';
+const NUMBEO_API_KEY = 'MY_NUMBEO_API_KEY';
+const GOOGLE_MAPS_API_KEY = 'MY_GOOGLE_MAPS_API_KEY';
 
-// Mapping for cities: maps dropdown values to full strings.
+// Mapping for cities
 const cityMappings = {
   "San Francisco": "San Francisco, CA, United States",
   "Seattle": "Seattle, WA, United States",
@@ -46,10 +35,7 @@ let selectedOriginCity = '';
 let selectedDestinationCity = '';
 let currentCarouselIndex = 0;
 
-/**
- * Carousel images for each city.
- * Ensure these files exist in your assets/images/ folder.
- */
+// Carousel images
 const carouselImages = {
   'Austin': [
     'assets/images/austin_fine_dining.webp',
@@ -75,33 +61,43 @@ const carouselImages = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Handle form submission (only two fields)
+  // Show/hide "Other City" field
+  const originCitySelect = document.getElementById('originCity');
+  const otherCityContainer = document.getElementById('otherCityContainer');
+  originCitySelect.addEventListener('change', function() {
+    otherCityContainer.style.display = (this.value === 'Other') ? 'block' : 'none';
+  });
+
+  // Form submission
   const moveForm = document.getElementById('moveForm');
   moveForm.addEventListener('submit', async (e) => {
+    // Prevent default so page doesn't reload
     e.preventDefault();
-    const originVal = document.getElementById('originCity').value;
+
+    // Read the selected values
+    const originVal = originCitySelect.value;
     const destVal = document.getElementById('destinationCity').value;
+
+    // Map them or use raw
     selectedOriginCity = cityMappings[originVal] || originVal;
     selectedDestinationCity = cityMappings[destVal] || destVal;
-    
-    // Update the cost comparison chart with real Numbeo data.
+
+    // *** IMPORTANT ***
+    // Reassign the dropdowns so they remain on the chosen values.
+    document.getElementById('originCity').value = originVal;
+    document.getElementById('destinationCity').value = destVal;
+
+    // Now do all your logic
     updateCostChartWithNumbeo(selectedOriginCity, selectedDestinationCity);
-    
-    // Update raw Numbeo data sections.
     updateNumbeoData();
-    
-    // Update housing prices chart.
     updateHousingPricesChart(selectedOriginCity, selectedDestinationCity);
-    
-    // Update carousel and map.
-    updateCarousel(selectedDestinationCity);
-    initMap(selectedDestinationCity);
-    
-    // Do not reset the form; selections remain intact.
+    updateCarousel(destVal);
+    initMap(destVal);
+
     document.getElementById('costComparison').scrollIntoView({ behavior: 'smooth' });
   });
-  
-  // Carousel navigation buttons.
+
+  // Carousel navigation
   document.getElementById('prevBtn').addEventListener('click', () => changeCarousel(-1));
   document.getElementById('nextBtn').addEventListener('click', () => changeCarousel(1));
 });
@@ -173,23 +169,22 @@ function parseNumbeoCostData(costJson) {
   const rentItem = items.find(i => i.item_name === "Apartment (1 bedroom) in City Centre");
   if (rentItem && rentItem.average_price) rent = rentItem.average_price;
   
-  // Utilities: "Basic (Electricity, Heating, Cooling, Water, Garbage) for 85m2 Apartment"
+  // Utilities
   const utilitiesItem = items.find(i => i.item_name.includes("Basic (Electricity, Heating, Cooling, Water, Garbage)"));
   if (utilitiesItem && utilitiesItem.average_price) utilities = utilitiesItem.average_price;
   
-  // Groceries: Approximate using "Milk (regular), (1 liter)" * 30
+  // Groceries (milk * 30)
   const milkItem = items.find(i => i.item_name === "Milk (regular), (1 liter)");
   if (milkItem && milkItem.average_price) groceries += milkItem.average_price * 30;
   
-  // Dining: "Meal, Inexpensive Restaurant" * 4
+  // Dining (Meal, Inexpensive Restaurant * 4)
   const mealItem = items.find(i => i.item_name === "Meal, Inexpensive Restaurant");
   if (mealItem && mealItem.average_price) dining = mealItem.average_price * 4;
   
-  // Gas: "Gasoline (1 liter)" * 50
+  // Gas (Gasoline (1 liter) * 50)
   const gasItem = items.find(i => i.item_name === "Gasoline (1 liter)");
   if (gasItem && gasItem.average_price) gas = gasItem.average_price * 50;
   
-  // Taxes: Not provided directly, so remains 0.
   return { rent, groceries, dining, gas, utilities, taxes };
 }
 
@@ -200,7 +195,7 @@ function parseNumbeoPropertyPrices(propJson) {
   return aptItem && aptItem.average_price ? aptItem.average_price : 0;
 }
 
-/* --------------------- REAL BAR CHART WITH NUMBEO COST DATA --------------------- */
+/* --------------------- COST COMPARISON CHART --------------------- */
 async function updateCostChartWithNumbeo(originKey, destKey) {
   const originCOL = await fetchNumbeoCostOfLiving(originKey);
   const destCOL = await fetchNumbeoCostOfLiving(destKey);
@@ -289,7 +284,7 @@ async function updateHousingPricesChart(originKey, destKey) {
 
 /* --------------------- GOOGLE MAPS WITH CUSTOM MARKER --------------------- */
 function initMap(cityKey) {
-  let centerCoords = { lat: 39.8283, lng: -98.5795 }; // default: center of US
+  let centerCoords = { lat: 39.8283, lng: -98.5795 };
   if (cityKey.includes("Austin")) {
     centerCoords = { lat: 30.2672, lng: -97.7431 };
   } else if (cityKey.includes("Scottsdale")) {
@@ -301,16 +296,14 @@ function initMap(cityKey) {
     zoom: 12
   });
   
-  // Marker for destination.
   new google.maps.Marker({
     position: centerCoords,
     map: map,
     title: cityKey
   });
   
-  // Custom marker for Realtor.com's address (house emoji).
-  // Replace these coordinates with Realtor.com's actual location.
-  const realtorCoords = { lat: 40.7291, lng: -74.0007 };
+  // Realtor.com address marker (house emoji)
+  const realtorCoords = { lat: 40.7291, lng: -74.0007 }; // Example coords
   new google.maps.Marker({
     position: realtorCoords,
     map: map,
@@ -391,6 +384,3 @@ function changeCarousel(direction) {
     document.getElementById('carouselImage').src = images[currentCarouselIndex];
   }
 }
-
-
-
