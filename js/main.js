@@ -1,4 +1,3 @@
-
 /*************************************************************
  * main.js - Relocation Guide: Austin & Scottsdale
  *
@@ -9,31 +8,31 @@
  *   for both the candidate’s current city and desired destination.
  * - Contains existing functionality for cost comparisons, housing info, maps, etc.
  *
- * All API calls now use only the "city" parameter (assumed to be in the United States).
+ * All API calls now use a full city string (e.g., "Austin, TX, United States").
  *************************************************************/
 
 // Replace these with your actual API keys:
 const NUMBEO_API_KEY = 'ydwk8vb0prixpe';
 const GOOGLE_MAPS_API_KEY = 'AIzaSyBXm1ezEjfsjdDB-f26OAztdiRldLIM8X4';
 
-// Mapping for cities (maps user-friendly names to "City, State" strings)
+// Mapping for cities: maps user-friendly names to full strings expected by Numbeo.
 const cityMappings = {
-  "San Francisco": { city: "San Francisco, CA" },
-  "Seattle": { city: "Seattle, WA" },
-  "New York": { city: "New York, NY" },
-  "Los Angeles": { city: "Los Angeles, CA" },
-  "Boston": { city: "Boston, MA" },
-  "Chicago": { city: "Chicago, IL" },
-  "Denver": { city: "Denver, CO" },
-  "Atlanta": { city: "Atlanta, GA" },
-  "Austin": { city: "Austin, TX" },
-  "Raleigh": { city: "Raleigh, NC" },
-  "Dallas": { city: "Dallas, TX" },
-  "San Diego": { city: "San Diego, CA" },
-  "San Jose": { city: "San Jose, CA" },
-  "Portland": { city: "Portland, OR" },
-  "Phoenix": { city: "Phoenix, AZ" },
-  "Scottsdale": { city: "Scottsdale, AZ" }
+  "San Francisco": { city: "San Francisco, CA, United States" },
+  "Seattle": { city: "Seattle, WA, United States" },
+  "New York": { city: "New York, NY, United States" },
+  "Los Angeles": { city: "Los Angeles, CA, United States" },
+  "Boston": { city: "Boston, MA, United States" },
+  "Chicago": { city: "Chicago, IL, United States" },
+  "Denver": { city: "Denver, CO, United States" },
+  "Atlanta": { city: "Atlanta, GA, United States" },
+  "Austin": { city: "Austin, TX, United States" },
+  "Raleigh": { city: "Raleigh, NC, United States" },
+  "Dallas": { city: "Dallas, TX, United States" },
+  "San Diego": { city: "San Diego, CA, United States" },
+  "San Jose": { city: "San Jose, CA, United States" },
+  "Portland": { city: "Portland, OR, United States" },
+  "Phoenix": { city: "Phoenix, AZ, United States" },
+  "Scottsdale": { city: "Scottsdale, AZ, United States" }
 };
 
 let selectedOriginCity = '';
@@ -189,7 +188,6 @@ function formatNumbeoData(data) {
 
 /**
  * Update Numbeo data for the current and destination cities.
- * Uses the mapped city names (e.g., "Austin, TX") from cityMappings.
  */
 async function updateNumbeoData() {
   if (selectedOriginCity && selectedDestinationCity) {
@@ -303,9 +301,9 @@ async function updateHousingInfo(city) {
 function initMap(city) {
   let mapSrc = '';
   if (city === 'Austin') {
-    mapSrc = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=Austin,TX`;
+    mapSrc = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=Austin,TX,United+States`;
   } else if (city === 'Scottsdale') {
-    mapSrc = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=Scottsdale,AZ`;
+    mapSrc = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=Scottsdale,AZ,United+States`;
   } else {
     mapSrc = `https://www.google.com/maps/embed/v1/view?key=${GOOGLE_MAPS_API_KEY}&center=39.8283,-98.5795&zoom=4`;
   }
