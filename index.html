@@ -81,9 +81,9 @@
     <img src="https://via.placeholder.com/400x100?text=Realtor.com+Logo" alt="Realtor.com Logo" />
     <h1>Relocation Guide</h1>
   </header>
+  <!-- The form's action is set to do nothing so the page will not reload -->
   <div class="container">
-    <!-- Simplified Form -->
-    <form id="moveForm">
+    <form id="moveForm" action="javascript:void(0);">
       <label for="originCity">Which Tech Hub Are You Coming From?</label>
       <select id="originCity" required>
         <option value="">Select your current city</option>
@@ -169,7 +169,7 @@
     <div id="mapContainer" style="height:400px; margin-top:20px;"></div>
   </div>
   
-  <!-- Load Google Maps JavaScript API (replace MY_GOOGLE_MAPS_API_KEY with your key) -->
+  <!-- Load Google Maps JavaScript API with your key -->
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=MY_GOOGLE_MAPS_API_KEY"></script>
   <script src="js/main.js"></script>
 </body>
