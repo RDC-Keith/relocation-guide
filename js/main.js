@@ -8,8 +8,8 @@
  *************************************************************/
 
 // Replace these with your actual API keys:
-const NUMBEO_API_KEY = 'MY_NUMBEO_API_KEY';
-const GOOGLE_MAPS_API_KEY = 'MY_GOOGLE_MAPS_API_KEY';
+const NUMBEO_API_KEY = 'ydwk8vb0prixpe';
+const GOOGLE_MAPS_API_KEY = 'AIzaSyBXm1ezEjfsjdDB-f26OAztdiRldLIM8X4';
 
 // Mapping for cities
 const cityMappings = {
