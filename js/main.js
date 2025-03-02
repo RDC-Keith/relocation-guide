@@ -1,38 +1,36 @@
 /*************************************************************
- * main.js - Relocation Guide: Austin & Scottsdale
+ * main.js - Relocation Guide (REAL Numbeo data in the chart)
  *
  * This file:
- * - Uses your provided API keys for Numbeo and Google Maps.
- * - Implements a carousel for city images (15 for Austin, 2 for Scottsdale).
- * - Fetches and displays Numbeo data (cost of living, property prices, quality of life)
- *   for both the candidate’s current city and desired destination.
- * - Contains existing functionality for cost comparisons, housing info, maps, etc.
- *
- * All API calls now use a full city string (e.g., "Austin, TX, United States").
+ * 1) Uses Numbeo's cost_of_living, property_prices, and quality_of_life
+ *    via the query= parameter. 
+ * 2) Builds a real bar chart with data from parseNumbeoCostData.
+ * 3) Displays property prices & quality of life data in the “Numbeo Data” section.
+ * 4) Retains existing logic for the carousel, map, neighborhoods, etc.
  *************************************************************/
 
 // Replace these with your actual API keys:
 const NUMBEO_API_KEY = 'ydwk8vb0prixpe';
 const GOOGLE_MAPS_API_KEY = 'AIzaSyBXm1ezEjfsjdDB-f26OAztdiRldLIM8X4';
 
-// Mapping for cities: maps user-friendly names to full strings expected by Numbeo.
+// Optional mapping if your dropdown uses short keys like "Austin"
 const cityMappings = {
-  "San Francisco": { city: "San Francisco, CA, United States" },
-  "Seattle": { city: "Seattle, WA, United States" },
-  "New York": { city: "New York, NY, United States" },
-  "Los Angeles": { city: "Los Angeles, CA, United States" },
-  "Boston": { city: "Boston, MA, United States" },
-  "Chicago": { city: "Chicago, IL, United States" },
-  "Denver": { city: "Denver, CO, United States" },
-  "Atlanta": { city: "Atlanta, GA, United States" },
-  "Austin": { city: "Austin, TX, United States" },
-  "Raleigh": { city: "Raleigh, NC, United States" },
-  "Dallas": { city: "Dallas, TX, United States" },
-  "San Diego": { city: "San Diego, CA, United States" },
-  "San Jose": { city: "San Jose, CA, United States" },
-  "Portland": { city: "Portland, OR, United States" },
-  "Phoenix": { city: "Phoenix, AZ, United States" },
-  "Scottsdale": { city: "Scottsdale, AZ, United States" }
+  "San Francisco": "San Francisco, CA, United States",
+  "Seattle": "Seattle, WA, United States",
+  "New York": "New York, NY, United States",
+  "Los Angeles": "Los Angeles, CA, United States",
+  "Boston": "Boston, MA, United States",
+  "Chicago": "Chicago, IL, United States",
+  "Denver": "Denver, CO, United States",
+  "Atlanta": "Atlanta, GA, United States",
+  "Austin": "Austin, TX, United States",
+  "Raleigh": "Raleigh, NC, United States",
+  "Dallas": "Dallas, TX, United States",
+  "San Diego": "San Diego, CA, United States",
+  "San Jose": "San Jose, CA, United States",
+  "Portland": "Portland, OR, United States",
+  "Phoenix": "Phoenix, AZ, United States",
+  "Scottsdale": "Scottsdale, AZ, United States"
 };
 
 let selectedOriginCity = '';
@@ -42,8 +40,8 @@ let desiredHomeSaved = false;
 let currentCarouselIndex = 0;
 
 /**
- * Carousel images for each city.
- * Ensure these filenames exist in your assets/images/ folder.
+ * Carousel images for each city (Austin/Scottsdale).
+ * Make sure these files exist in assets/images/.
  */
 const carouselImages = {
   'Austin': [
@@ -70,14 +68,14 @@ const carouselImages = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Toggle "Other City" input
+  // Show/hide "Other" city input
   const originCitySelect = document.getElementById('originCity');
   const otherCityContainer = document.getElementById('otherCityContainer');
   originCitySelect.addEventListener('change', function() {
     otherCityContainer.style.display = (this.value === 'Other') ? 'block' : 'none';
   });
 
-  // Set up Save Home Info buttons (if they exist)
+  // Save home info (if these buttons exist in your forms)
   const saveCurrentBtn = document.getElementById('saveCurrentHomeBtn');
   const saveDesiredBtn = document.getElementById('saveDesiredHomeBtn');
   if (saveCurrentBtn) {
@@ -94,56 +92,65 @@ document.addEventListener('DOMContentLoaded', () => {
       maybeEnableCompare();
     });
   }
+
   function maybeEnableCompare() {
     if (currentHomeSaved && desiredHomeSaved) {
       document.getElementById('compareBtn').style.display = 'inline-block';
     }
   }
 
-  // Form submission handler
+  // Handle form submission
   const moveForm = document.getElementById('moveForm');
   moveForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    selectedOriginCity = originCitySelect.value;
-    if (selectedOriginCity === 'Other') {
+    const originSelectValue = originCitySelect.value;
+    if (originSelectValue === 'Other') {
       const customCity = document.getElementById('otherCity').value.trim();
-      if (customCity) selectedOriginCity = customCity;
+      selectedOriginCity = customCity || 'Unknown City';
+    } else {
+      selectedOriginCity = originSelectValue;
     }
-    selectedDestinationCity = document.getElementById('destinationCity').value;
 
-    // Update UI sections
-    updateCostChart(selectedOriginCity, selectedDestinationCity);
-    updateHousingInfo(selectedDestinationCity);
-    initMap(selectedDestinationCity);
-    updateNeighborhoods(selectedDestinationCity);
+    const destinationSelectValue = document.getElementById('destinationCity').value;
+    selectedDestinationCity = destinationSelectValue;
+
+    // Build the real bar chart from Numbeo data
+    updateCostChartWithNumbeo(selectedOriginCity, selectedDestinationCity);
+
+    // Also fetch & display property prices, quality of life, etc.
+    updateNumbeoData();
+
+    // Update carousel
     updateCarousel(selectedDestinationCity);
-    updateNumbeoData(); // Fetch and display Numbeo data
 
-    // Smooth scroll to next section
+    // For your map, housing, neighborhoods, etc.:
+    initMap(selectedDestinationCity);
+    updateHousingInfo(selectedDestinationCity);
+    updateNeighborhoods(selectedDestinationCity);
+
+    // Scroll to the next section
     document.getElementById('livingSituation').scrollIntoView({ behavior: 'smooth' });
   });
 
-  // Compare button handler (for cost table)
+  // Compare button for cost table (if you keep it)
   const compareBtn = document.getElementById('compareBtn');
   compareBtn.addEventListener('click', () => {
     document.getElementById('costTableContainer').style.display = 'block';
-    updateCostTable(selectedOriginCity, selectedDestinationCity);
+    // If you want to show the old table with dummy data, you can keep:
+    // updateCostTable(selectedOriginCity, selectedDestinationCity);
+    // Or remove it entirely if you no longer want dummy data.
   });
 
-  // Carousel navigation buttons
+  // Carousel navigation
   document.getElementById('prevBtn').addEventListener('click', () => changeCarousel(-1));
   document.getElementById('nextBtn').addEventListener('click', () => changeCarousel(1));
 });
 
-/* --------------------- NUMBEO API FUNCTIONS --------------------- */
+/* --------------------- NUMBEO API (using query=) --------------------- */
 
-/**
- * Fetch cost of living data from Numbeo.
- * Uses only the city parameter (assumes United States).
- */
-async function fetchNumbeoCostOfLiving(city) {
+async function fetchNumbeoCostOfLiving(cityString) {
   try {
-    const url = `https://www.numbeo.com/api/cost_of_living?api_key=${NUMBEO_API_KEY}&city=${encodeURIComponent(city)}`;
+    const url = `https://www.numbeo.com/api/cost_of_living?api_key=${NUMBEO_API_KEY}&query=${encodeURIComponent(cityString)}`;
     const response = await fetch(url);
     return response.json();
   } catch (error) {
@@ -151,12 +158,9 @@ async function fetchNumbeoCostOfLiving(city) {
   }
 }
 
-/**
- * Fetch property prices data from Numbeo.
- */
-async function fetchNumbeoPropertyPrices(city) {
+async function fetchNumbeoPropertyPrices(cityString) {
   try {
-    const url = `https://www.numbeo.com/api/property_prices?api_key=${NUMBEO_API_KEY}&city=${encodeURIComponent(city)}`;
+    const url = `https://www.numbeo.com/api/property_prices?api_key=${NUMBEO_API_KEY}&query=${encodeURIComponent(cityString)}`;
     const response = await fetch(url);
     return response.json();
   } catch (error) {
@@ -164,12 +168,9 @@ async function fetchNumbeoPropertyPrices(city) {
   }
 }
 
-/**
- * Fetch quality of life data from Numbeo.
- */
-async function fetchNumbeoQualityOfLife(city) {
+async function fetchNumbeoQualityOfLife(cityString) {
   try {
-    const url = `https://www.numbeo.com/api/quality_of_life?api_key=${NUMBEO_API_KEY}&city=${encodeURIComponent(city)}`;
+    const url = `https://www.numbeo.com/api/quality_of_life?api_key=${NUMBEO_API_KEY}&query=${encodeURIComponent(cityString)}`;
     const response = await fetch(url);
     return response.json();
   } catch (error) {
@@ -178,7 +179,60 @@ async function fetchNumbeoQualityOfLife(city) {
 }
 
 /**
- * Simple formatter for Numbeo JSON data.
+ * Summarizes certain items from Numbeo's cost_of_living response
+ * into approximate monthly costs for rent, groceries, dining, gas, etc.
+ */
+function parseNumbeoCostData(costOfLivingJson) {
+  let rent = 0;
+  let groceries = 0;
+  let dining = 0;
+  let gas = 0;
+  let utilities = 0;
+  let taxes = 0; // If you want to define some logic for taxes
+
+  if (!costOfLivingJson || !costOfLivingJson.prices) {
+    return { rent, groceries, dining, gas, utilities, taxes };
+  }
+  const items = costOfLivingJson.prices;
+
+  // Example: Rent = “Apartment (1 bedroom) in City Centre”
+  const rentItem = items.find(i => i.item_name === "Apartment (1 bedroom) in City Centre");
+  if (rentItem && rentItem.average_price) {
+    rent = rentItem.average_price; 
+  }
+
+  // Utilities = “Basic (Electricity, Heating, Cooling, Water, Garbage) for 85m2 Apartment”
+  const utilitiesItem = items.find(i => i.item_name.includes("Basic (Electricity, Heating, Cooling, Water, Garbage)"));
+  if (utilitiesItem && utilitiesItem.average_price) {
+    utilities = utilitiesItem.average_price;
+  }
+
+  // Groceries example: just a small approximation
+  // e.g. “Milk (regular), (1 liter)” * 30
+  const milkItem = items.find(i => i.item_name === "Milk (regular), (1 liter)");
+  if (milkItem && milkItem.average_price) {
+    groceries += milkItem.average_price * 30;
+  }
+
+  // Dining: “Meal, Inexpensive Restaurant” * 4 (4 times a month)
+  const mealItem = items.find(i => i.item_name === "Meal, Inexpensive Restaurant");
+  if (mealItem && mealItem.average_price) {
+    dining = mealItem.average_price * 4;
+  }
+
+  // Gas: “Gasoline (1 liter)” * 50 liters
+  const gasItem = items.find(i => i.item_name === "Gasoline (1 liter)");
+  if (gasItem && gasItem.average_price) {
+    gas = gasItem.average_price * 50;
+  }
+
+  // Taxes: no direct data in cost_of_living, so let's keep it at 0 or define your own logic
+
+  return { rent, groceries, dining, gas, utilities, taxes };
+}
+
+/**
+ * Formats the entire JSON for display in the "Numbeo Data" text blocks
  */
 function formatNumbeoData(data) {
   if (!data) return 'Data unavailable.';
@@ -187,178 +241,40 @@ function formatNumbeoData(data) {
 }
 
 /**
- * Update Numbeo data for the current and destination cities.
+ * Calls all three Numbeo endpoints (cost_of_living, property_prices, quality_of_life)
+ * and displays them in the placeholders.
  */
 async function updateNumbeoData() {
-  if (selectedOriginCity && selectedDestinationCity) {
-    const mappedOrigin = cityMappings[selectedOriginCity] ? cityMappings[selectedOriginCity].city : selectedOriginCity;
-    const mappedDest = cityMappings[selectedDestinationCity] ? cityMappings[selectedDestinationCity].city : selectedDestinationCity;
-    
-    // Cost of Living
-    const costOrigin = await fetchNumbeoCostOfLiving(mappedOrigin);
-    const costDest = await fetchNumbeoCostOfLiving(mappedDest);
-    document.getElementById('numbeoCostOfLivingOrigin').innerHTML = formatNumbeoData(costOrigin);
-    document.getElementById('numbeoCostOfLivingDest').innerHTML = formatNumbeoData(costDest);
-    
-    // Property Prices
-    const propOrigin = await fetchNumbeoPropertyPrices(mappedOrigin);
-    const propDest = await fetchNumbeoPropertyPrices(mappedDest);
-    document.getElementById('numbeoPropertyPricesOrigin').innerHTML = formatNumbeoData(propOrigin);
-    document.getElementById('numbeoPropertyPricesDest').innerHTML = formatNumbeoData(propDest);
-    
-    // Quality of Life
-    const qolOrigin = await fetchNumbeoQualityOfLife(mappedOrigin);
-    const qolDest = await fetchNumbeoQualityOfLife(mappedDest);
-    document.getElementById('numbeoQualityOfLifeOrigin').innerHTML = formatNumbeoData(qolOrigin);
-    document.getElementById('numbeoQualityOfLifeDest').innerHTML = formatNumbeoData(qolDest);
-  }
+  if (!selectedOriginCity || !selectedDestinationCity) return;
+
+  const originString = cityMappings[selectedOriginCity] || selectedOriginCity;
+  const destString = cityMappings[selectedDestinationCity] || selectedDestinationCity;
+
+  // Cost of Living
+  const costOrigin = await fetchNumbeoCostOfLiving(originString);
+  const costDest = await fetchNumbeoCostOfLiving(destString);
+  document.getElementById('numbeoCostOfLivingOrigin').innerHTML = formatNumbeoData(costOrigin);
+  document.getElementById('numbeoCostOfLivingDest').innerHTML = formatNumbeoData(costDest);
+
+  // Property Prices
+  const propOrigin = await fetchNumbeoPropertyPrices(originString);
+  const propDest = await fetchNumbeoPropertyPrices(destString);
+  document.getElementById('numbeoPropertyPricesOrigin').innerHTML = formatNumbeoData(propOrigin);
+  document.getElementById('numbeoPropertyPricesDest').innerHTML = formatNumbeoData(propDest);
+
+  // Quality of Life
+  const qolOrigin = await fetchNumbeoQualityOfLife(originString);
+  const qolDest = await fetchNumbeoQualityOfLife(destString);
+  document.getElementById('numbeoQualityOfLifeOrigin').innerHTML = formatNumbeoData(qolOrigin);
+  document.getElementById('numbeoQualityOfLifeDest').innerHTML = formatNumbeoData(qolDest);
 }
 
-/* --------------------- END NUMBEO FUNCTIONS --------------------- */
+/* --------------------- REAL BAR CHART WITH NUMBEO DATA --------------------- */
 
-/* --------------------- EXISTING FUNCTIONALITY --------------------- */
+/**
+ * This function fetches cost_of_living for both origin & des
 
-// Dummy cost-of-living data fetch for cost table (for demonstration)
-async function fetchCostData(origin, destination) {
-  try {
-    const originData = { dining: 350, rent: 1800, groceries: 500, gas: 200, utilities: 250, taxes: 300 };
-    const destData = { dining: 300, rent: 1400, groceries: 450, gas: 180, utilities: 220, taxes: 200 };
-    return { origin: originData, destination: destData };
-  } catch (error) {
-    console.error('Error fetching cost data:', error);
-  }
-}
 
-async function updateCostTable(origin, destination) {
-  const costData = await fetchCostData(origin, destination);
-  if (!costData) return;
-  document.getElementById('originCityLabel').innerText = origin || 'Origin';
-  document.getElementById('destinationCityLabel').innerText = destination || 'Destination';
-  document.getElementById('originDining').innerText = `$${costData.origin.dining}`;
-  document.getElementById('destDining').innerText = `$${costData.destination.dining}`;
-  document.getElementById('originRent').innerText = `$${costData.origin.rent}`;
-  document.getElementById('destRent').innerText = `$${costData.destination.rent}`;
-  document.getElementById('originGroceries').innerText = `$${costData.origin.groceries}`;
-  document.getElementById('destGroceries').innerText = `$${costData.destination.groceries}`;
-  document.getElementById('originGas').innerText = `$${costData.origin.gas}`;
-  document.getElementById('destGas').innerText = `$${costData.destination.gas}`;
-  document.getElementById('originUtilities').innerText = `$${costData.origin.utilities}`;
-  document.getElementById('destUtilities').innerText = `$${costData.destination.utilities}`;
-  document.getElementById('originTaxes').innerText = `$${costData.origin.taxes}`;
-  document.getElementById('destTaxes').innerText = `$${costData.destination.taxes}`;
-  const originTotal = Object.values(costData.origin).reduce((a, b) => a + b, 0);
-  const destTotal = Object.values(costData.destination).reduce((a, b) => a + b, 0);
-  document.getElementById('originTotal').innerText = `$${originTotal}`;
-  document.getElementById('destTotal').innerText = `$${destTotal}`;
-}
 
-async function updateCostChart(origin, destination) {
-  const costData = await fetchCostData(origin, destination);
-  const originCosts = costData?.origin || { dining: 350, rent: 1800, groceries: 500, gas: 200, utilities: 250, taxes: 300 };
-  const destCosts = costData?.destination || { dining: 300, rent: 1400, groceries: 450, gas: 180, utilities: 220, taxes: 200 };
-  const originTotal = Object.values(originCosts).reduce((a, b) => a + b, 0);
-  const destTotal = Object.values(destCosts).reduce((a, b) => a + b, 0);
-  const ctx = document.getElementById('costChart').getContext('2d');
-  new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['Dining', 'Rent', 'Groceries', 'Gas', 'Utilities', 'State Taxes', 'Total'],
-      datasets: [
-        { label: origin, data: [originCosts.dining, originCosts.rent, originCosts.groceries, originCosts.gas, originCosts.utilities, originCosts.taxes, originTotal], backgroundColor: 'rgba(0,116,228,0.6)' },
-        { label: destination, data: [destCosts.dining, destCosts.rent, destCosts.groceries, destCosts.gas, destCosts.utilities, destCosts.taxes, destTotal], backgroundColor: 'rgba(255,99,132,0.6)' }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: { title: { display: true, text: 'Cost of Living Comparison' } },
-      scales: { y: { beginAtZero: true } }
-    }
-  });
-}
 
-async function fetchHousingData(city) {
-  try {
-    return { medianPrice: 500000, marketTrend: 'Stable', daysOnMarket: 45 };
-  } catch (error) {
-    console.error('Error fetching housing data:', error);
-  }
-}
 
-async function updateHousingInfo(city) {
-  const data = await fetchHousingData(city);
-  const housingDiv = document.getElementById('housingInfo');
-  if (!data) {
-    housingDiv.innerHTML = `<p>No real-time data available for ${city}.</p>`;
-  } else {
-    housingDiv.innerHTML = `
-      <p>Median Home Price: $${data.medianPrice}</p>
-      <p>Market Trend: ${data.marketTrend}</p>
-      <p>Days on Market: ${data.daysOnMarket}</p>
-    `;
-  }
-}
-
-function initMap(city) {
-  let mapSrc = '';
-  if (city === 'Austin') {
-    mapSrc = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=Austin,TX,United+States`;
-  } else if (city === 'Scottsdale') {
-    mapSrc = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=Scottsdale,AZ,United+States`;
-  } else {
-    mapSrc = `https://www.google.com/maps/embed/v1/view?key=${GOOGLE_MAPS_API_KEY}&center=39.8283,-98.5795&zoom=4`;
-  }
-  document.getElementById('mapContainer').innerHTML = `
-    <iframe width="100%" height="100%" frameborder="0" style="border:0" src="${mapSrc}" allowfullscreen></iframe>
-  `;
-}
-
-function updateNeighborhoods(city) {
-  const neighborhoodsDiv = document.getElementById('neighborhoods');
-  let recommendations = '';
-  if (city === 'Austin') {
-    recommendations = `
-      <div class="neighborhood-card">
-        <h3>Downtown Austin</h3>
-        <p>Great for young professionals, vibrant nightlife, and tech opportunities.</p>
-      </div>
-      <div class="neighborhood-card">
-        <h3>South Congress (SoCo)</h3>
-        <p>Eclectic vibe with plenty of dining and boutique shopping options.</p>
-      </div>
-    `;
-  } else if (city === 'Scottsdale') {
-    recommendations = `
-      <div class="neighborhood-card">
-        <h3>Old Town Scottsdale</h3>
-        <p>Lively area with excellent dining, nightlife, and a rich arts scene.</p>
-      </div>
-      <div class="neighborhood-card">
-        <h3>North Scottsdale</h3>
-        <p>Upscale neighborhoods with golf courses and top-rated schools.</p>
-      </div>
-    `;
-  } else {
-    recommendations = `<p>Please select a city to see neighborhood suggestions.</p>`;
-  }
-  neighborhoodsDiv.innerHTML = recommendations;
-}
-
-/* --------------------- CAROUSEL FUNCTIONS --------------------- */
-function updateCarousel(city) {
-  currentCarouselIndex = 0;
-  const carouselImage = document.getElementById('carouselImage');
-  if (carouselImages[city]) {
-    carouselImage.src = carouselImages[city][currentCarouselIndex];
-  } else {
-    carouselImage.src = 'https://via.placeholder.com/200x200?text=Select+a+Destination';
-  }
-}
-
-function changeCarousel(direction) {
-  const images = carouselImages[selectedDestinationCity];
-  if (images && images.length) {
-    currentCarouselIndex = (currentCarouselIndex + direction + images.length) % images.length;
-    document.getElementById('carouselImage').src = images[currentCarouselIndex];
-  }
-}
-/* --------------------- END CAROUSEL FUNCTIONS --------------------- */
