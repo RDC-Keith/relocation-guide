@@ -9,7 +9,6 @@
   <!-- Link to CSS -->
   <link rel="stylesheet" href="css/style.css">
   <style>
-    /* Minimal styling for the simplified version */
     body {
       font-family: Arial, sans-serif;
       background-color: #f8f8f8;
@@ -81,9 +80,10 @@
     <img src="https://via.placeholder.com/400x100?text=Realtor.com+Logo" alt="Realtor.com Logo" />
     <h1>Relocation Guide</h1>
   </header>
-  <!-- The form's action is set to do nothing so the page will not reload -->
+
+  <!-- The form has no 'action' or 'method' to avoid any reload -->
   <div class="container">
-    <form id="moveForm" action="javascript:void(0);">
+    <form id="moveForm">
       <label for="originCity">Which Tech Hub Are You Coming From?</label>
       <select id="originCity" required>
         <option value="">Select your current city</option>
