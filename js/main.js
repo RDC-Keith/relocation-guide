@@ -75,7 +75,7 @@ const carouselImages = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Form submission handler (only two fields).
+  // Handle form submission (only two fields)
   const moveForm = document.getElementById('moveForm');
   moveForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -84,20 +84,20 @@ document.addEventListener('DOMContentLoaded', () => {
     selectedOriginCity = cityMappings[originVal] || originVal;
     selectedDestinationCity = cityMappings[destVal] || destVal;
     
-    // Update the real cost comparison chart using real Numbeo data.
+    // Update the cost comparison chart with real Numbeo data.
     updateCostChartWithNumbeo(selectedOriginCity, selectedDestinationCity);
     
-    // Update the raw Numbeo Data sections.
+    // Update raw Numbeo data sections.
     updateNumbeoData();
     
-    // Update the housing prices chart.
+    // Update housing prices chart.
     updateHousingPricesChart(selectedOriginCity, selectedDestinationCity);
     
     // Update carousel and map.
     updateCarousel(selectedDestinationCity);
     initMap(selectedDestinationCity);
     
-    // Scroll to the cost comparison section.
+    // Do not reset the form; selections remain intact.
     document.getElementById('costComparison').scrollIntoView({ behavior: 'smooth' });
   });
   
@@ -189,19 +189,15 @@ function parseNumbeoCostData(costJson) {
   const gasItem = items.find(i => i.item_name === "Gasoline (1 liter)");
   if (gasItem && gasItem.average_price) gas = gasItem.average_price * 50;
   
-  // Taxes: Not provided directly
+  // Taxes: Not provided directly, so remains 0.
   return { rent, groceries, dining, gas, utilities, taxes };
 }
 
 /* --------------------- PARSER FOR NUMBEO PROPERTY PRICES --------------------- */
-/**
- * Parse the property_prices JSON to extract a representative housing price.
- * For this example, we choose "Apartment (1 bedroom) in City Centre".
- */
 function parseNumbeoPropertyPrices(propJson) {
   if (!propJson || !propJson.prices) return 0;
   const aptItem = propJson.prices.find(item => item.item_name === "Apartment (1 bedroom) in City Centre");
-  return (aptItem && aptItem.average_price) ? aptItem.average_price : 0;
+  return aptItem && aptItem.average_price ? aptItem.average_price : 0;
 }
 
 /* --------------------- REAL BAR CHART WITH NUMBEO COST DATA --------------------- */
@@ -292,12 +288,7 @@ async function updateHousingPricesChart(originKey, destKey) {
 }
 
 /* --------------------- GOOGLE MAPS WITH CUSTOM MARKER --------------------- */
-/**
- * Creates an interactive Google Map centered on the destination.
- * Adds a marker for the destination and a custom house emoji marker for Realtor.com's address.
- */
 function initMap(cityKey) {
-  // Determine center based on the destination.
   let centerCoords = { lat: 39.8283, lng: -98.5795 }; // default: center of US
   if (cityKey.includes("Austin")) {
     centerCoords = { lat: 30.2672, lng: -97.7431 };
@@ -317,8 +308,8 @@ function initMap(cityKey) {
     title: cityKey
   });
   
-  // Custom marker for Realtor.com's address.
-  // Replace these coordinates with the actual Realtor.com location.
+  // Custom marker for Realtor.com's address (house emoji).
+  // Replace these coordinates with Realtor.com's actual location.
   const realtorCoords = { lat: 40.7291, lng: -74.0007 };
   new google.maps.Marker({
     position: realtorCoords,
@@ -400,7 +391,6 @@ function changeCarousel(direction) {
     document.getElementById('carouselImage').src = images[currentCarouselIndex];
   }
 }
-
 
 
 
